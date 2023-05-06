@@ -1546,3 +1546,7 @@ blockquote {
     margin-right: 0;
   }
 }
+
+img.img-responsive {
+  height: 270px;
+  }
