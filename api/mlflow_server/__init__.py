@@ -136,7 +136,8 @@ def create_mlflow_user(username, password):
             timeout=10
         )
         
-        if response.status_code == 200:
+        # Accept both 200 and 201 as success (201 = Created)
+        if response.status_code in [200, 201]:
             return True, "User created successfully"
         elif response.status_code == 400 and "already exists" in response.text:
             return False, "User already exists"
@@ -156,7 +157,8 @@ def create_mlflow_workspace(workspace_name):
             timeout=10
         )
         
-        if response.status_code == 200:
+        # Accept both 200 and 201 as success (201 = Created)
+        if response.status_code in [200, 201]:
             return True, "Workspace created successfully"
         elif response.status_code == 400:
             return False, f"Workspace creation failed: {response.text}"
@@ -176,7 +178,8 @@ def grant_workspace_permissions(workspace_name, username):
             timeout=10
         )
         
-        if response.status_code == 200:
+        # Accept both 200 and 201 as success (201 = Created)
+        if response.status_code in [200, 201]:
             return True, "Permissions granted successfully"
         else:
             return False, f"Permission error: {response.text}"
