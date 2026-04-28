@@ -33,7 +33,16 @@ def generate_password(length=16):
 
 def extract_username_from_email(email):
     """Extract username from email (john@example.com -> john)"""
-    return email.split("@")[0].lower()
+    username = email.split("@")[0].lower()
+    # Sanitize: replace invalid characters (., _, etc.) with hyphens
+    # MLflow allows: lowercase alphanumeric and hyphens only
+    username = username.replace(".", "-").replace("_", "-")
+    # Remove any double hyphens
+    while "--" in username:
+        username = username.replace("--", "-")
+    # Remove leading/trailing hyphens
+    username = username.strip("-")
+    return username
 
 def send_email(user_email, username, password, workspace_name):
     """Send credentials email via Namecheap SMTP"""
@@ -225,7 +234,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         # Generate credentials
         username = extract_username_from_email(user_email)
         password = generate_password()
-        workspace_name = f"ws_{username}"
+        workspace_name = f"ws-{username}"  # Use hyphen, not underscore (MLflow requirement)
         
         # Step 1: Create user
         success, message = create_mlflow_user(username, password)
