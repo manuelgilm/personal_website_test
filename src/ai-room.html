@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>AI Room - Manuel Gil</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,300i,400,400i,500,500i,600,600i,700,700i|Playfair+Display:400,400i,500,500i,600,600i,700,700i,900,900i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <!-- ======= Top Header/Nav ======= -->
+  <header id="header" class="fixed-top header-inner-pages">
+    <div class="container d-flex align-items-center justify-content-between">
+
+      <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link scrollto" href="index.html#hero">Home</a></li>
+          <li><a class="nav-link scrollto" href="index.html#about">About</a></li>
+          <li><a class="nav-link scrollto" href="index.html#portfolio">Portfolio</a></li>
+          <li><a class="nav-link scrollto" href="index.html#journal">Blog</a></li>
+          <li><a class="nav-link active" href="ai-room.html">AI Room</a></li>
+          <li><a class="nav-link scrollto" href="index.html#contact">Contact</a></li>
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- ======= Main AI Room Container ======= -->
+  <div class="ai-room-container">
+    
+    <!-- ======= Left Sidebar Menu ======= -->
+    <aside class="ai-sidebar">
+      <div class="sidebar-header">
+        <h3>AI Room</h3>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li>
+            <button class="sidebar-link active" onclick="showSection('home')">
+              <i class="bi bi-controller"></i> Main
+            </button>
+          </li>
+          <li>
+            <button class="sidebar-link" onclick="showSection('ml-ai')">
+              <i class="bi bi-cpu"></i> ML & AI
+            </button>
+          </li>
+          <li>
+            <button class="sidebar-link" onclick="showSection('youtube')">
+              <i class="bi bi-youtube"></i> YouTube
+            </button>
+          </li>
+          <li>
+            <button class="sidebar-link" onclick="showSection('articles')">
+              <i class="bi bi-file-text"></i> Articles
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- ======= Main Content Area ======= -->
+    <main class="ai-content">
+      
+      <!-- Home Section - Dinosaur Game -->
+      <section id="home-section" class="content-section active">
+        <div class="section-header">
+          <h2>Welcome to AI Room</h2>
+          <p>Play while learning about AI!</p>
+        </div>
+        <div class="game-container">
+          <canvas id="gameCanvas" width="800" height="400" style="background: linear-gradient(to bottom, #87ceeb 0%, #e0f6ff 100%); display: block; margin: 20px auto; border: 2px solid #333;"></canvas>
+          <div class="game-controls">
+            <button class="btn btn-sm" onclick="jumpGame()">Jump / Space</button>
+            <button class="btn btn-sm" onclick="resetGame()">Reset Game</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ML & AI Section -->
+      <section id="ml-ai-section" class="content-section">
+        <div class="section-header">
+          <h2>ML & AI Tools</h2>
+          <p>Explore AI-powered tools and platforms</p>
+        </div>
+        <div class="tools-grid">
+          <!-- MLflow Tool -->
+          <div class="tool-card" onclick="showService('mlflow')">
+            <div class="tool-icon">
+              <i class="bi bi-graph-up"></i>
+            </div>
+            <h4>MLflow</h4>
+            <p>Track and manage ML experiments</p>
+            <span class="status-badge">Available</span>
+          </div>
+
+          <!-- Placeholder Tools -->
+          <div class="tool-card" onclick="showService('tool2')">
+            <div class="tool-icon">
+              <i class="bi bi-bezier"></i>
+            </div>
+            <h4>Tool Name</h4>
+            <p>Coming soon...</p>
+            <span class="status-badge coming-soon">Coming Soon</span>
+          </div>
+
+          <div class="tool-card" onclick="showService('tool3')">
+            <div class="tool-icon">
+              <i class="bi bi-robot"></i>
+            </div>
+            <h4>AI Agent</h4>
+            <p>Coming soon...</p>
+            <span class="status-badge coming-soon">Coming Soon</span>
+          </div>
+
+          <div class="tool-card" onclick="showService('tool4')">
+            <div class="tool-icon">
+              <i class="bi bi-lightning"></i>
+            </div>
+            <h4>Tool Name</h4>
+            <p>Coming soon...</p>
+            <span class="status-badge coming-soon">Coming Soon</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Service Detail Section (MLflow) -->
+      <section id="mlflow-section" class="content-section service-detail">
+        <div class="back-button">
+          <button class="btn-link" onclick="showSection('ml-ai')">
+            <i class="bi bi-chevron-left"></i> Back to Tools
+          </button>
+        </div>
+        <div class="section-header">
+          <h2>MLflow Server</h2>
+          <p>Track, manage, and deploy machine learning models</p>
+          <div class="service-actions">
+            <button class="btn btn-ai-room" data-bs-toggle="modal" data-bs-target="#accessModal" data-service="mlflow">
+              <i class="bi bi-download"></i> Get Access
+            </button>
+            <a href="https://ko-fi.com" target="_blank" class="btn btn-contribute">
+              <i class="bi bi-heart-fill"></i> Contribute (Ko-fi)
+            </a>
+          </div>
+        </div>
+
+        <div class="service-content">
+          <div class="service-section">
+            <h3>About MLflow</h3>
+            <p>MLflow is a platform to manage the ML lifecycle, including experimentation, reproducibility, deployment, and a central model registry. This instance is hosted for community use and experimentation.</p>
+          </div>
+
+          <div class="service-section">
+            <h3>Features</h3>
+            <ul>
+              <li>Track experiments and parameters</li>
+              <li>Compare model performance</li>
+              <li>Manage model versions</li>
+              <li>Deploy models to production</li>
+            </ul>
+          </div>
+
+          <div class="disclaimer-box">
+            <h4><i class="bi bi-exclamation-circle"></i> Disclaimer</h4>
+            <p>This MLflow server is a <strong>personal project</strong> and has <strong>no affiliation with Databricks</strong> or the official MLflow project. It is maintained independently for educational and experimental purposes.</p>
+          </div>
+
+          <div class="personal-project-box">
+            <h4><i class="bi bi-info-circle"></i> Personal Project Notice</h4>
+            <p>This service is not affiliated with my professional work and is maintained as a hobby project. Use at your own discretion. For production deployments, please refer to the official MLflow documentation and consider enterprise solutions.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- YouTube Section -->
+      <section id="youtube-section" class="content-section">
+        <div class="section-header">
+          <h2>YouTube Playlists</h2>
+          <p>Check out my playlists</p>
+        </div>
+        <div class="playlists-grid">
+          <!-- Playlist 1 -->
+          <div class="playlist-card">
+            <div class="playlist-thumbnail">
+              <i class="bi bi-play-circle"></i>
+            </div>
+            <div class="playlist-info">
+              <h4>Playlist 1</h4>
+              <p>Collection of videos on ML and AI topics</p>
+              <a href="https://www.youtube.com/playlist?list=PLQqR_3C2fhUUOmaeowgv4WquvH515zVmo" target="_blank" class="btn btn-sm btn-outline-primary">
+                Watch Playlist <i class="bi bi-arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Playlist 2 -->
+          <div class="playlist-card">
+            <div class="playlist-thumbnail">
+              <i class="bi bi-play-circle"></i>
+            </div>
+            <div class="playlist-info">
+              <h4>Playlist 2</h4>
+              <p>Additional content and tutorials</p>
+              <a href="https://www.youtube.com/playlist?list=PLQqR_3C2fhUUkoXAcomOxcvfPwRn90U-g" target="_blank" class="btn btn-sm btn-outline-primary">
+                Watch Playlist <i class="bi bi-arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Articles Section -->
+      <section id="articles-section" class="content-section">
+        <div class="section-header">
+          <h2>Articles & Guides</h2>
+          <p>Technical articles and documentation</p>
+        </div>
+        <div class="ai-articles-block">
+          <div class="row">
+            <!-- Learning a Language Article -->
+            <div class="col-lg-4 col-md-6">
+              <div class="journal-info">
+                <a target="_blank" href="https://manuel-gilm.medium.com/learning-a-language-is-easy-discover-how-6f00b857c35"><img src="https://miro.medium.com/v2/resize:fit:828/0*Q2AiVv0Mj1hXRwSp" class="img-responsive" alt="img"></a>
+                <div class="journal-txt">
+                  <h4><a target="_blank" href="https://manuel-gilm.medium.com/learning-a-language-is-easy-discover-how-6f00b857c35">Learning a language is easy, discover how.</a></h4>
+                  <p class="separator">Introduction Have you ever been amazed by people who are able to speak more than one language? They know how to convey ideas and express themselves in different situations, regardless of the language...</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- The Detective's Toolkit Article -->
+            <div class="col-lg-4 col-md-6">
+              <div class="journal-info">
+                <a target="_blank" href="https://python.plainenglish.io/the-detectives-toolkit-alibi-for-drift-detection-324445ef8789"><img src="https://miro.medium.com/v2/resize:fit:720/0*B98yCiPPKsOz5yRb" class="img-responsive" alt="img"></a>
+                <div class="journal-txt">
+                  <h4><a target="_blank" href="https://python.plainenglish.io/the-detectives-toolkit-alibi-for-drift-detection-324445ef8789">The Detective's Toolkit: Alibi for Drift Detection.</a></h4>
+                  <p class="separator">As a data scientist, you have been working on a model for several weeks, and the metrics you defined as success criteria now look promising. Learn about drift detection in production environments...</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Jupyter Notebooks with Poetry Article -->
+            <div class="col-lg-4 col-md-6">
+              <div class="journal-info">
+                <a target="_blank" href="https://manuel-gilm.medium.com/make-the-most-out-of-your-jupyter-notebooks-using-poetry-8cd6b2b9bcb1"><img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*UYcp2CWlau25j8KdOo_cCg.jpeg" class="img-responsive" alt="img"></a>
+                <div class="journal-txt">
+                  <h4><a target="_blank" href="https://manuel-gilm.medium.com/make-the-most-out-of-your-jupyter-notebooks-using-poetry-8cd6b2b9bcb1">Make the most out of your Jupyter Notebooks using Poetry.</a></h4>
+                  <p class="separator">Exploratory Data Analysis (EDA) is the first stage of any data science project. Discover how to manage your Jupyter Notebook dependencies with Poetry for better reproducibility...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ======= Access Request Modal ======= -->
+  <div class="modal fade" id="accessModal" tabindex="-1" aria-labelledby="accessModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="accessModalLabel">Request Access</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="accessForm">
+            <div class="mb-3">
+              <label for="emailInput" class="form-label">Email Address</label>
+              <input type="email" class="form-control" id="emailInput" placeholder="your.email@example.com" required>
+              <small class="text-muted">We'll send you access credentials to this email.</small>
+            </div>
+            <input type="hidden" id="serviceInput" name="service" value="">
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="submitAccessRequest()">Request Access</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======= Footer ======= -->
+  <footer class="ai-footer">
+    <div class="container">
+      <p>&copy; 2024 Manuel Gil. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Vendor JS -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- AI Room JavaScript -->
+  <script>
+    // ============================================
+    // SECTION NAVIGATION
+    // ============================================
+    function showSection(sectionId) {
+      // Stop game if leaving home section
+      if (sectionId !== 'home') {
+        game.gameRunning = false;
+      }
+
+      // Hide all sections
+      const sections = document.querySelectorAll('.content-section');
+      sections.forEach(section => {
+        section.classList.remove('active');
+      });
+
+      // Show selected section
+      const selectedSection = document.getElementById(sectionId + '-section');
+      if (selectedSection) {
+        selectedSection.classList.add('active');
+        // Reset game if returning to home
+        if (sectionId === 'home') {
+          resetGame();
+        }
+      }
+
+      // Update sidebar active state
+      const sidebarLinks = document.querySelectorAll('.sidebar-link');
+      sidebarLinks.forEach(link => {
+        link.classList.remove('active');
+      });
+      event.target.closest('.sidebar-link').classList.add('active');
+    }
+
+    function showService(serviceId) {
+      if (serviceId === 'mlflow') {
+        showSection('mlflow');
+      } else {
+        alert('Coming soon!');
+      }
+    }
+
+    // ============================================
+    // DINOSAUR GAME
+    // ============================================
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const game = {
+      player: {
+        x: 50,
+        y: canvas.height - 150,
+        width: 40,
+        height: 50,
+        velocityY: 0,
+        jumping: false,
+        color: '#667eea'
+      },
+      obstacles: [],
+      score: 0,
+      gameRunning: true,
+      gameSpeed: 7,
+      gravity: 0.6,
+      jumpPower: 15
+    };
+
+    function drawPlayer() {
+      ctx.fillStyle = game.player.color;
+      ctx.fillRect(game.player.x, game.player.y, game.player.width, game.player.height);
+      
+      // Draw simple robot-like face
+      ctx.fillStyle = '#764ba2';
+      ctx.fillRect(game.player.x + 10, game.player.y + 10, 10, 10);
+      ctx.fillRect(game.player.x + 20, game.player.y + 10, 10, 10);
+    }
+
+    function drawObstacle(obstacle) {
+      ctx.fillStyle = '#f39c12';
+      ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+    }
+
+    function drawScore() {
+      ctx.fillStyle = '#333';
+      ctx.font = '20px Arial';
+      ctx.fillText('Score: ' + game.score, 20, 30);
+    }
+
+    function updateGame() {
+      if (!game.gameRunning) return;
+
+      // Apply gravity
+      game.player.velocityY += game.gravity;
+      game.player.y += game.player.velocityY;
+
+      // Floor collision
+      if (game.player.y + game.player.height >= canvas.height - 50) {
+        game.player.y = canvas.height - game.player.height - 50;
+        game.player.velocityY = 0;
+        game.player.jumping = false;
+      }
+
+      // Move obstacles
+      for (let i = game.obstacles.length - 1; i >= 0; i--) {
+        game.obstacles[i].x -= game.gameSpeed;
+
+        // Check collision
+        if (checkCollision(game.player, game.obstacles[i])) {
+          game.gameRunning = false;
+          alert('Game Over! Score: ' + game.score);
+          return;
+        }
+
+        // Remove obstacle if off screen
+        if (game.obstacles[i].x + game.obstacles[i].width < 0) {
+          game.obstacles.splice(i, 1);
+          game.score += 10;
+          game.gameSpeed += 0.5;
+        }
+      }
+
+      // Spawn obstacles
+      if (Math.random() < 0.01) {
+        game.obstacles.push({
+          x: canvas.width,
+          y: canvas.height - 100,
+          width: 30,
+          height: 50
+        });
+      }
+
+      draw();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw ground
+      ctx.fillStyle = '#90EE90';
+      ctx.fillRect(0, canvas.height - 50, canvas.width, 50);
+
+      drawPlayer();
+      game.obstacles.forEach(drawObstacle);
+      drawScore();
+    }
+
+    function checkCollision(rect1, rect2) {
+      return rect1.x < rect2.x + rect2.width &&
+             rect1.x + rect1.width > rect2.x &&
+             rect1.y < rect2.y + rect2.height &&
+             rect1.y + rect1.height > rect2.y;
+    }
+
+    function jumpGame() {
+      if (!game.player.jumping && game.gameRunning) {
+        game.player.velocityY = -game.jumpPower;
+        game.player.jumping = true;
+      }
+    }
+
+    function resetGame() {
+      game.player.y = canvas.height - 150;
+      game.player.velocityY = 0;
+      game.player.jumping = false;
+      game.obstacles = [];
+      game.score = 0;
+      game.gameRunning = true;
+      game.gameSpeed = 7;
+      draw();
+      gameLoop();
+    }
+
+    // Keyboard controls
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && document.getElementById('home-section').classList.contains('active')) {
+        e.preventDefault();
+        jumpGame();
+      }
+    });
+
+    function gameLoop() {
+      updateGame();
+      if (game.gameRunning) {
+        requestAnimationFrame(gameLoop);
+      }
+    }
+
+    // Initialize game
+    resetGame();
+
+    // ============================================
+    // ACCESS REQUEST MODAL
+    // ============================================
+    document.getElementById('accessModal').addEventListener('show.bs.modal', function (e) {
+      const service = e.relatedTarget.getAttribute('data-service');
+      document.getElementById('serviceInput').value = service;
+    });
+
+    function submitAccessRequest() {
+      const email = document.getElementById('emailInput').value;
+      const service = document.getElementById('serviceInput').value;
+
+      if (!email) {
+        alert('Please enter a valid email address');
+        return;
+      }
+
+      const requestData = {
+        email: email,
+        service: service
+      };
+
+      fetch('/api/request-access', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Success! Check your email for access credentials.');
+          document.getElementById('accessForm').reset();
+          bootstrap.Modal.getInstance(document.getElementById('accessModal')).hide();
+        } else {
+          alert('Error: ' + (data.message || 'Failed to process your request'));
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error: Failed to connect to the server');
+      });
+    }
+
+    document.getElementById('emailInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        submitAccessRequest();
+      }
+    });
+  </script>
+
+</body>
+
+</html>
