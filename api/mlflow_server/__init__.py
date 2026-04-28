@@ -112,7 +112,7 @@ AI Room Team
         msg.attach(MIMEText(html, "html"))
 
         # Send email
-        with smtplib.SMTP(NAMECHEAP_SMTP_SERVER, NAMECHEAP_SMTP_PORT) as server:
+        with smtplib.SMTP(NAMECHEAP_SMTP_SERVER, NAMECHEAP_SMTP_PORT, timeout=10) as server:
             server.starttls()
             server.login(NAMECHEAP_EMAIL, NAMECHEAP_PASSWORD)
             server.sendmail(FROM_EMAIL, user_email, msg.as_string())
