@@ -305,6 +305,34 @@
     </div>
   </div>
 
+  <!-- ======= Success Message Modal ======= -->
+  <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title" id="successModalLabel">
+            <i class="bi bi-check-circle"></i> Request Submitted!
+          </h5>
+        </div>
+        <div class="modal-body text-center">
+          <div style="font-size: 48px; color: #667eea; margin-bottom: 15px;">
+            <i class="bi bi-envelope-check"></i>
+          </div>
+          <h6>Your credentials are on the way!</h6>
+          <p class="text-muted" style="margin-bottom: 10px;">Check your email inbox within the next few minutes for your access credentials.</p>
+          <p style="font-size: 14px; color: #666;">
+            <i class="bi bi-info-circle"></i> Don't see it? Check your spam folder.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+            <i class="bi bi-check"></i> Got it!
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ======= Footer ======= -->
   <footer class="ai-footer">
     <div class="container">
@@ -527,7 +555,11 @@
         service: service
       };
 
-      fetch('/api/request-access', {
+      // API endpoint: Update this if deploying to Azure or custom domain
+      // Local: http://localhost:7071/api/mlflow_server
+      // Azure: https://your-function-app.azurewebsites.net/api/mlflow_server
+      // Current (relative): /api/mlflow_server
+      fetch('/api/mlflow_server', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -537,9 +569,13 @@
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          alert('Success! Check your email for access credentials.');
-          document.getElementById('accessForm').reset();
+          // Hide request modal and show success modal
           bootstrap.Modal.getInstance(document.getElementById('accessModal')).hide();
+          document.getElementById('accessForm').reset();
+          
+          // Show success message modal
+          const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+          successModal.show();
         } else {
           alert('Error: ' + (data.message || 'Failed to process your request'));
         }
