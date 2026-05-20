@@ -1,0 +1,30 @@
+site_name: "YouWiki"
+theme:
+  name: material
+  features:
+    - navigation.tabs         # Creates the top menu for channels
+    - navigation.sections     # Groups playlists nicely in the left sidebar
+    - navigation.indexes      # Allows clicking a section title to open its index.md
+
+# Default to English (change to docs/es for Spanish)
+docs_dir: docs/en
+
+nav:
+  - Home: index.md
+  - Engineering Channel:
+    - Overview: engineering_channel/index.md
+    - YT Bot Series:
+      - Series 1 - YouTube API: engineering_channel/yt_bot_series/01_architecture_and_setup.md
+      - Series 2 - Bot Skeleton: engineering_channel/yt_bot_series/02_skeleton_bot.md
+      - Series 3 - Prompt Engineering & MLflow: engineering_channel/yt_bot_series/03_prompt_engineering_mlflow.md
+      - Series 4 - GitHub Actions: engineering_channel/yt_bot_series/04_github_actions.md
+      - Series 5 - System Integration: engineering_channel/yt_bot_series/05_system_as_whole.md
+    - MLflow For ML Dev:
+      - introduction: mlflow_for_ml_dev/
+      
+
+  # - Devlog Channel:
+  #   - Overview: devlog_channel/index.md
+  #   - Vitrini API in Go: devlog_channel/vitrini_backend_go/01_why_go_over_python.md
+  # - Products:
+  #   - Sudops: products/sudops_platform/01_getting_started.md
