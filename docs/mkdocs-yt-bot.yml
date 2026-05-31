@@ -1,0 +1,17 @@
+site_name: "YouTube Bot Series"
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.indexes
+
+docs_dir: docs/en/engineering_channel/yt_bot_series
+site_dir: ../build/bot
+
+nav:
+  - Home: index.md
+  - Architecture & Setup: 01_architecture_and_setup.md
+  - Skeleton Bot: 02_skeleton_bot.md
+  - Prompt Engineering & MLflow: 03_prompt_engineering_mlflow.md
+  - GitHub Actions: 04_github_actions.md
+  - System Integration: 05_system_as_whole.md
