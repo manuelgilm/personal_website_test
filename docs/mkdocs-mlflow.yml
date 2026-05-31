@@ -4,9 +4,14 @@ theme:
   features:
     - navigation.sections
     - navigation.indexes
+  version: "1.0"
 
 docs_dir: docs/en/engineering_channel/mlflow_for_ml_dev
-site_dir: ../build/mlflow
+site_dir: build/mlflow
+
+extra:
+  version:
+    provider: mike
 
 nav:
   - Home: index.md
