@@ -1,0 +1,37 @@
+{
+  "routes": [
+    {
+      "route": "/mlflow/*",
+      "serve": "/mlflow/index.html",
+      "statusCode": 200
+    },
+    {
+      "route": "/bot/*",
+      "serve": "/bot/index.html",
+      "statusCode": 200
+    },
+    {
+      "route": "/docs/*",
+      "serve": "/docs/index.html",
+      "statusCode": 200
+    },
+    {
+      "route": "/*",
+      "serve": "/index.html",
+      "statusCode": 200
+    }
+  ],
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": [
+      "/img/*",
+      "/css/*",
+      "/js/*",
+      "/api/*",
+      "/assets/*"
+    ]
+  },
+  "mimeTypes": {
+    ".json": "text/json"
+  }
+}

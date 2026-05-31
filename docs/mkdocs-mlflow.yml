@@ -1,0 +1,13 @@
+site_name: "MLflow For ML Dev"
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.indexes
+
+docs_dir: docs/en/engineering_channel/mlflow_for_ml_dev
+site_dir: ../build/mlflow
+
+nav:
+  - Home: index.md
+  - Experiment Tracking Basics: experiment_tracking_basics.md

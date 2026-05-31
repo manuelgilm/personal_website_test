@@ -19,11 +19,32 @@ jobs:
         with:
           submodules: true
           lfs: false
+      
+      - name: Set up Python for mkdocs
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install mkdocs and mike
+        run: |
+          pip install mkdocs mkdocs-material mike
+      
+      - name: Build versioned documentation
+        run: |
+          cd docs
+          chmod +x build-versioned-docs.sh
+          ./build-versioned-docs.sh
+      
       - name: Prepare docs for deployment
         run: |
           mkdir -p src/docs
+          mkdir -p src/mlflow
+          mkdir -p src/bot
           cp -r docs/site_en src/docs/site_en
           cp -r docs/site_es src/docs/site_es
+          cp -r docs/build/mlflow/* src/mlflow/ || true
+          cp -r docs/build/bot/* src/bot/ || true
+          cp staticwebapp.json src/staticwebapp.json
                     
       - name: Build And Deploy
         id: builddeploy
