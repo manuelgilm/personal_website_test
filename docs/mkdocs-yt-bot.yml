@@ -4,9 +4,14 @@ theme:
   features:
     - navigation.sections
     - navigation.indexes
+  version: "1.0"
 
 docs_dir: docs/en/engineering_channel/yt_bot_series
-site_dir: ../build/bot
+site_dir: build/bot
+
+extra:
+  version:
+    provider: mike
 
 nav:
   - Home: index.md

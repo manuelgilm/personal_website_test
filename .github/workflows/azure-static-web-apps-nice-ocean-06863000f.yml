@@ -25,15 +25,16 @@ jobs:
         with:
           python-version: '3.11'
       
-      - name: Install mkdocs and mike
+      - name: Install mkdocs dependencies
         run: |
-          pip install mkdocs mkdocs-material mike
+          pip install mkdocs mkdocs-material
       
       - name: Build versioned documentation
         run: |
           cd docs
           chmod +x build-versioned-docs.sh
           ./build-versioned-docs.sh
+          cd ..
       
       - name: Prepare docs for deployment
         run: |
