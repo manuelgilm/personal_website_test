@@ -12,6 +12,8 @@ A **run** refers to a **single execution of machine learning code**. Why is defi
 
 When executing machine learning code, plenty of **parameters and configurations** are needed to control the behavior of feature generation and, especially, model training. Not only do parameters and configurations change, but the orchestration code changes as well.
 
+TODO: <inser animation here>
+
 MLflow's **Run concept** helps **track all these variables** across multiple executions of your code. Within an MLflow run, you can track **metrics**, **parameters**, **tags**, and **artifacts** (like data files or model weights). Different runs can then be easily compared to highlight their differences and performance improvements.
 
 ## The MLflow Experiment
