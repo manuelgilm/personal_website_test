@@ -13,14 +13,14 @@ nav:
   - Home: index.md
   - Engineering Channel:
     - Overview: engineering_channel/index.md
-    - YT Bot Series:
-      - Series 1 - YouTube API: engineering_channel/yt_bot_series/01_architecture_and_setup.md
-      - Series 2 - Bot Skeleton: engineering_channel/yt_bot_series/02_skeleton_bot.md
-      - Series 3 - Prompt Engineering & MLflow: engineering_channel/yt_bot_series/03_prompt_engineering_mlflow.md
-      - Series 4 - GitHub Actions: engineering_channel/yt_bot_series/04_github_actions.md
-      - Series 5 - System Integration: engineering_channel/yt_bot_series/05_system_as_whole.md
-    - MLflow For ML Dev:
-      - introduction: mlflow_for_ml_dev/
+    - Automating YouTube with AI: engineering_channel/automating_youtube_with_ai/01_intro.md
+      # - Series 1 - YouTube API: engineering_channel/yt_bot_series/01_architecture_and_setup.md
+      # - Series 2 - Bot Skeleton: engineering_channel/yt_bot_series/02_skeleton_bot.md
+      # - Series 3 - Prompt Engineering & MLflow: engineering_channel/yt_bot_series/03_prompt_engineering_mlflow.md
+      # - Series 4 - GitHub Actions: engineering_channel/yt_bot_series/04_github_actions.md
+      # - Series 5 - System Integration: engineering_channel/yt_bot_series/05_system_as_whole.md
+    # - MLflow For ML Dev:
+    #   - introduction: mlflow_for_ml_dev/
       
 
   # - Devlog Channel:
