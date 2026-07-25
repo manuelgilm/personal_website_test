@@ -27,7 +27,7 @@ FROM_EMAIL = os.getenv("FROM_EMAIL", NAMECHEAP_EMAIL)
 # UTILITY FUNCTIONS
 # ============================================
 
-def generate_password(length:Optional[int]=16) -> str:
+def generate_password(length:int=16) -> str:
     """
     Generate a random secure password
     
@@ -221,6 +221,66 @@ def grant_workspace_permissions(workspace_name: str, username: str) -> tuple[boo
         return False, f"Grant permission error: {str(e)}"
 
 # ============================================
+# HELPERS
+# ============================================
+
+def _error_response(message: str, status: int = 400) -> func.HttpResponse:
+    """Create a JSON error response
+
+    :param message: Error message
+    :param status: HTTP status code (default 400)
+    :return: HTTP response with JSON error body
+    """
+    return func.HttpResponse(
+        json.dumps({"success": False, "message": message}),
+        status_code=status,
+        mimetype="application/json"
+    )
+
+def _validate_config() -> Optional[func.HttpResponse]:
+    """Validate that all required environment variables are set
+
+    :return: Error HTTP response if config is incomplete, None otherwise
+    """
+    if not all([MLFLOW_SERVER_URL, MLFLOW_ADMIN_USER, MLFLOW_ADMIN_PASSWORD,
+                NAMECHEAP_EMAIL, NAMECHEAP_PASSWORD]):
+        return _error_response(
+            "Server configuration incomplete. Contact administrator.",
+            status=500
+        )
+    return None
+
+def _provision_mlflow(user_email: str) -> tuple[bool, str, dict | None]:
+    """Execute the full MLflow provisioning workflow
+
+    :param user_email: Email address of the user to provision
+    :return: Tuple of (success flag, status message, optional data dict)
+    """
+    username = extract_username_from_email(user_email)
+    password = generate_password()
+    workspace_name = f"ws-{username}"
+
+    provision_steps = [
+        (create_mlflow_user, (username, password), False),
+        (create_mlflow_workspace, (workspace_name,), False),
+        (grant_workspace_permissions, (workspace_name, username), False),
+        (send_email, (user_email, username, password, workspace_name), True),
+    ]
+
+    for step_func, step_args, soft_failure in provision_steps:
+        success, message = step_func(*step_args)
+        if not success:
+            if soft_failure:
+                return True, f"Account created but email delivery failed. {message}", {
+                    "username": username, "workspace": workspace_name, "email": user_email
+                }
+            return False, message, None
+
+    return True, "MLflow account created successfully. Credentials sent to email.", {
+        "username": username, "workspace": workspace_name, "email": user_email
+    }
+
+# ============================================
 # MAIN AZURE FUNCTION
 # ============================================
 
@@ -232,108 +292,30 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     :return: HTTP response with JSON body containing success status and message
     :raises ValueError: If the request body is not valid JSON
     """
-    
-    # Validate configuration
-    if not all([MLFLOW_SERVER_URL, MLFLOW_ADMIN_USER, MLFLOW_ADMIN_PASSWORD, 
-                NAMECHEAP_EMAIL, NAMECHEAP_PASSWORD]):
-        return func.HttpResponse(
-            json.dumps({
-                "success": False,
-                "message": "Server configuration incomplete. Contact administrator."
-            }),
-            status_code=500,
-            mimetype="application/json"
-        )
-    
+    config_error = _validate_config()
+    if config_error:
+        return config_error
+
     try:
-        # Parse request
         req_body = req.get_json()
         user_email = req_body.get("email")
         service = req_body.get("service", "mlflow")
-        
-        # Validate input
+
         if not user_email:
-            return func.HttpResponse(
-                json.dumps({"success": False, "message": "Email is required"}),
-                status_code=400,
-                mimetype="application/json"
-            )
-        
+            return _error_response("Email is required")
         if service != "mlflow":
-            return func.HttpResponse(
-                json.dumps({"success": False, "message": f"Service '{service}' not supported"}),
-                status_code=400,
-                mimetype="application/json"
-            )
-        
-        # Generate credentials
-        username = extract_username_from_email(user_email)
-        password = generate_password()
-        workspace_name = f"ws-{username}"  # Use hyphen, not underscore (MLflow requirement)
-        
-        # Step 1: Create user
-        success, message = create_mlflow_user(username, password)
-        if not success:
-            return func.HttpResponse(
-                json.dumps({"success": False, "message": message}),
-                status_code=400,
-                mimetype="application/json"
-            )
-        
-        # Step 2: Create workspace
-        success, message = create_mlflow_workspace(workspace_name)
-        if not success:
-            return func.HttpResponse(
-                json.dumps({"success": False, "message": message}),
-                status_code=400,
-                mimetype="application/json"
-            )
-        
-        # Step 3: Grant permissions
-        success, message = grant_workspace_permissions(workspace_name, username)
-        if not success:
-            return func.HttpResponse(
-                json.dumps({"success": False, "message": message}),
-                status_code=400,
-                mimetype="application/json"
-            )
-        
-        # Step 4: Send email
-        success, message = send_email(user_email, username, password, workspace_name)
-        if not success:
-            return func.HttpResponse(
-                json.dumps({
-                    "success": True,
-                    "message": f"Account created but email delivery failed. {message}"
-                }),
-                status_code=200,
-                mimetype="application/json"
-            )
-        
-        # Success
+            return _error_response(f"Service '{service}' not supported")
+
+        success, message, data = _provision_mlflow(user_email)
+        body = {"success": success, "message": message}
+        if data:
+            body["data"] = data
         return func.HttpResponse(
-            json.dumps({
-                "success": True,
-                "message": "MLflow account created successfully. Credentials sent to email.",
-                "data": {
-                    "username": username,
-                    "workspace": workspace_name,
-                    "email": user_email
-                }
-            }),
-            status_code=200,
+            json.dumps(body),
+            status_code=200 if success else 400,
             mimetype="application/json"
         )
-        
     except ValueError as e:
-        return func.HttpResponse(
-            json.dumps({"success": False, "message": f"Invalid request: {str(e)}"}),
-            status_code=400,
-            mimetype="application/json"
-        )
+        return _error_response(f"Invalid request: {str(e)}")
     except Exception as e:
-        return func.HttpResponse(
-            json.dumps({"success": False, "message": f"Server error: {str(e)}"}),
-            status_code=500,
-            mimetype="application/json"
-        )
+        return _error_response(f"Server error: {str(e)}", status=500)
