@@ -1,4 +1,5 @@
 import azure.functions as func
+from typing import Optional
 import requests
 from requests.auth import HTTPBasicAuth
 import os
@@ -26,13 +27,23 @@ FROM_EMAIL = os.getenv("FROM_EMAIL", NAMECHEAP_EMAIL)
 # UTILITY FUNCTIONS
 # ============================================
 
-def generate_password(length=16):
-    """Generate a random secure password"""
+def generate_password(length:Optional[int]=16) -> str:
+    """
+    Generate a random secure password
+    
+    :param length: password lenght
+    :return: password string
+    """
     characters = string.ascii_letters + string.digits + "!@#$%"
     return ''.join(random.choice(characters) for _ in range(length))
 
-def extract_username_from_email(email):
-    """Extract username from email (john@example.com -> john)"""
+def extract_username_from_email(email:str) -> str:
+    """
+    Extract username from email (john@example.com -> john)
+    
+    :param email: User email
+    :return: username
+    """
     username = email.split("@")[0].lower()
     # Sanitize: replace invalid characters (., _, etc.) with hyphens
     # MLflow allows: lowercase alphanumeric and hyphens only
