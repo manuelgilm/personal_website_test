@@ -31,32 +31,38 @@ def generate_password(length:Optional[int]=16) -> str:
     """
     Generate a random secure password
     
-    :param length: password lenght
-    :return: password string
+    :param length: Length of the password to generate
+    :return: Randomly generated password string
     """
     characters = string.ascii_letters + string.digits + "!@#$%"
     return ''.join(random.choice(characters) for _ in range(length))
 
 def extract_username_from_email(email:str) -> str:
     """
-    Extract username from email (john@example.com -> john)
+    Extract username from email address (john@example.com -> john)
     
-    :param email: User email
-    :return: username
+    :param email: Email address to extract the username from
+    :return: Sanitized username string
     """
     username = email.split("@")[0].lower()
-    # Sanitize: replace invalid characters (., _, etc.) with hyphens
     # MLflow allows: lowercase alphanumeric and hyphens only
     username = username.replace(".", "-").replace("_", "-")
     # Remove any double hyphens
     while "--" in username:
         username = username.replace("--", "-")
-    # Remove leading/trailing hyphens
     username = username.strip("-")
     return username
 
-def send_email(user_email, username, password, workspace_name):
-    """Send credentials email via Namecheap SMTP"""
+def send_email(user_email: str, username: str, password: str, workspace_name: str) -> tuple[bool, str]:
+    """
+    Send credentials email via Namecheap SMTP
+
+    :param user_email: Recipient email address
+    :param username: MLflow username to include in the email
+    :param password: Generated password to include in the email
+    :param workspace_name: MLflow workspace name to include in the email
+    :return: Tuple of (success flag, status message)
+    """
     try:
         # Create email
         msg = MIMEMultipart("alternative")
@@ -136,8 +142,14 @@ AI Room Team
 # MLFLOW API OPERATIONS
 # ============================================
 
-def create_mlflow_user(username, password):
-    """Create a new MLflow user"""
+def create_mlflow_user(username: str, password: str) -> tuple[bool, str]:
+    """
+    Create a new MLflow user via the MLflow API
+
+    :param username: Username for the new MLflow user
+    :param password: Password for the new MLflow user
+    :return: Tuple of (success flag, status message)
+    """
     try:
         auth = HTTPBasicAuth(MLFLOW_ADMIN_USER, MLFLOW_ADMIN_PASSWORD)
         response = requests.post(
@@ -157,8 +169,13 @@ def create_mlflow_user(username, password):
     except Exception as e:
         return False, f"Create user error: {str(e)}"
 
-def create_mlflow_workspace(workspace_name):
-    """Create a new MLflow workspace"""
+def create_mlflow_workspace(workspace_name: str) -> tuple[bool, str]:
+    """
+    Create a new MLflow workspace via the MLflow API
+
+    :param workspace_name: Name of the workspace to create
+    :return: Tuple of (success flag, status message)
+    """
     try:
         auth = HTTPBasicAuth(MLFLOW_ADMIN_USER, MLFLOW_ADMIN_PASSWORD)
         response = requests.post(
@@ -178,8 +195,14 @@ def create_mlflow_workspace(workspace_name):
     except Exception as e:
         return False, f"Create workspace error: {str(e)}"
 
-def grant_workspace_permissions(workspace_name, username):
-    """Grant MANAGE permissions to user on workspace"""
+def grant_workspace_permissions(workspace_name: str, username: str) -> tuple[bool, str]:
+    """
+    Grant MANAGE permissions to a user on an MLflow workspace
+
+    :param workspace_name: Name of the workspace to grant permissions on
+    :param username: Username to grant MANAGE permissions to
+    :return: Tuple of (success flag, status message)
+    """
     try:
         auth = HTTPBasicAuth(MLFLOW_ADMIN_USER, MLFLOW_ADMIN_PASSWORD)
         response = requests.post(
@@ -203,13 +226,11 @@ def grant_workspace_permissions(workspace_name, username):
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     """
-    Main Azure Function to handle MLflow user provisioning
-    
-    Expected POST body:
-    {
-        "email": "user@example.com",
-        "service": "mlflow"
-    }
+    Handle MLflow user provisioning requests via Azure Functions
+
+    :param req: HTTP request with JSON body containing "email" and "service" fields
+    :return: HTTP response with JSON body containing success status and message
+    :raises ValueError: If the request body is not valid JSON
     """
     
     # Validate configuration
