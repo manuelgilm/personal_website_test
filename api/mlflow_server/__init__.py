@@ -22,7 +22,7 @@ NAMECHEAP_SMTP_PORT = int(os.getenv("NAMECHEAP_SMTP_PORT", "587"))
 NAMECHEAP_EMAIL = os.getenv("NAMECHEAP_EMAIL")
 NAMECHEAP_PASSWORD = os.getenv("NAMECHEAP_PASSWORD")
 FROM_EMAIL = os.getenv("FROM_EMAIL", NAMECHEAP_EMAIL)
-
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 # ============================================
 # UTILITY FUNCTIONS
 # ============================================
@@ -52,6 +52,19 @@ def extract_username_from_email(email:str) -> str:
         username = username.replace("--", "-")
     username = username.strip("-")
     return username
+
+def send_to_admin(user_email: str, admin_email):
+    """
+    Send email to the admin.
+
+    :param user_email: email of the user requesting access
+    :param admin_email: destination email
+    """
+    if admin_email:
+        send_email(user_email= admin_email, username=user_email, password="", workspace_name="default")
+    else:
+        print("ADMIN EMAIL WAS NOT PROVIDED")
+
 
 def send_email(user_email: str, username: str, password: str, workspace_name: str) -> tuple[bool, str]:
     """
@@ -169,31 +182,31 @@ def create_mlflow_user(username: str, password: str) -> tuple[bool, str]:
     except Exception as e:
         return False, f"Create user error: {str(e)}"
 
-def create_mlflow_workspace(workspace_name: str) -> tuple[bool, str]:
-    """
-    Create a new MLflow workspace via the MLflow API
+# def create_mlflow_workspace(workspace_name: str) -> tuple[bool, str]:
+#     """
+#     Create a new MLflow workspace via the MLflow API
 
-    :param workspace_name: Name of the workspace to create
-    :return: Tuple of (success flag, status message)
-    """
-    try:
-        auth = HTTPBasicAuth(MLFLOW_ADMIN_USER, MLFLOW_ADMIN_PASSWORD)
-        response = requests.post(
-            f"{MLFLOW_SERVER_URL}/api/3.0/mlflow/workspaces",
-            auth=auth,
-            json={"name": workspace_name},
-            timeout=10
-        )
+#     :param workspace_name: Name of the workspace to create
+#     :return: Tuple of (success flag, status message)
+#     """
+#     try:
+#         auth = HTTPBasicAuth(MLFLOW_ADMIN_USER, MLFLOW_ADMIN_PASSWORD)
+#         response = requests.post(
+#             f"{MLFLOW_SERVER_URL}/api/3.0/mlflow/workspaces",
+#             auth=auth,
+#             json={"name": workspace_name},
+#             timeout=10
+#         )
         
-        # Accept both 200 and 201 as success (201 = Created)
-        if response.status_code in [200, 201]:
-            return True, "Workspace created successfully"
-        elif response.status_code == 400:
-            return False, f"Workspace creation failed: {response.text}"
-        else:
-            return False, f"MLflow error: {response.text}"
-    except Exception as e:
-        return False, f"Create workspace error: {str(e)}"
+#         # Accept both 200 and 201 as success (201 = Created)
+#         if response.status_code in [200, 201]:
+#             return True, "Workspace created successfully"
+#         elif response.status_code == 400:
+#             return False, f"Workspace creation failed: {response.text}"
+#         else:
+#             return False, f"MLflow error: {response.text}"
+#     except Exception as e:
+#         return False, f"Create workspace error: {str(e)}"
 
 def grant_workspace_permissions(workspace_name: str, username: str) -> tuple[bool, str]:
     """
@@ -208,7 +221,7 @@ def grant_workspace_permissions(workspace_name: str, username: str) -> tuple[boo
         response = requests.post(
             f"{MLFLOW_SERVER_URL}/api/3.0/mlflow/workspaces/{workspace_name}/permissions",
             auth=auth,
-            json={"username": username, "permission": "MANAGE"},
+            json={"username": username, "permission": "READ"},
             timeout=10
         )
         
@@ -258,13 +271,14 @@ def _provision_mlflow(user_email: str) -> tuple[bool, str, dict | None]:
     """
     username = extract_username_from_email(user_email)
     password = generate_password()
-    workspace_name = f"ws-{username}"
-
+    # workspace_name = f"ws-{username}"
+    workspace_name = "default"
     provision_steps = [
         (create_mlflow_user, (username, password), False),
-        (create_mlflow_workspace, (workspace_name,), False),
+        # (create_mlflow_workspace, (workspace_name,), False),
         (grant_workspace_permissions, (workspace_name, username), False),
         (send_email, (user_email, username, password, workspace_name), True),
+        (send_to_admin(user_email, ADMIN_EMAIL), True)
     ]
 
     for step_func, step_args, soft_failure in provision_steps:
