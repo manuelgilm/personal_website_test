@@ -219,7 +219,7 @@ def grant_workspace_permissions(workspace_name: str, username: str) -> tuple[boo
     try:
         auth = HTTPBasicAuth(MLFLOW_ADMIN_USER, MLFLOW_ADMIN_PASSWORD)
         response = requests.post(
-            f"{MLFLOW_SERVER_URL}/api/3.0/mlflow/workspaces/permissions",
+            f"{MLFLOW_SERVER_URL}/api/3.0/mlflow/workspaces/{workspace_name}/permissions",
             auth=auth,
             json={"username": username, "permission": "READ"},
             timeout=10
@@ -227,7 +227,7 @@ def grant_workspace_permissions(workspace_name: str, username: str) -> tuple[boo
         
         # Accept both 200 and 201 as success (201 = Created)
         if response.status_code in [200, 201]:
-            return True, f"Permissions granted successfully in workspace {workspace_name}"
+            return True, "Permissions granted successfully"
         else:
             return False, f"Permission error: {response.text}"
     except Exception as e:
