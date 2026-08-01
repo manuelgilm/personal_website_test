@@ -65,22 +65,22 @@
       <nav class="sidebar-nav">
         <ul>
           <li>
-            <button class="sidebar-link active" onclick="showSection('home')">
+            <button class="sidebar-link active" onclick="showSection('home')" data-section="home">
               <i class="bi bi-controller"></i> Main
             </button>
           </li>
           <li>
-            <button class="sidebar-link" onclick="showSection('ml-ai')">
+            <button class="sidebar-link" onclick="showSection('ml-ai')" data-section="ml-ai">
               <i class="bi bi-cpu"></i> ML & AI
             </button>
           </li>
           <li>
-            <button class="sidebar-link" onclick="showSection('youtube')">
+            <button class="sidebar-link" onclick="showSection('youtube')" data-section="youtube">
               <i class="bi bi-youtube"></i> YouTube
             </button>
           </li>
           <li>
-            <button class="sidebar-link" onclick="showSection('articles')">
+            <button class="sidebar-link" onclick="showSection('articles')" data-section="articles">
               <i class="bi bi-file-text"></i> Articles
             </button>
           </li>
@@ -369,9 +369,17 @@
       // Update sidebar active state
       const sidebarLinks = document.querySelectorAll('.sidebar-link');
       sidebarLinks.forEach(link => {
-        link.classList.remove('active');
+        link.classList.toggle('active', link.dataset.section === sectionId);
       });
-      event.target.closest('.sidebar-link').classList.add('active');
+
+      // Update URL hash for deep-linking (skip the default home section)
+      if (sectionId === 'home') {
+        if (window.location.hash) {
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+      } else if (window.location.hash !== '#' + sectionId) {
+        window.location.hash = sectionId;
+      }
     }
 
     function showService(serviceId) {
@@ -381,6 +389,20 @@
         alert('Coming soon!');
       }
     }
+
+    // ============================================
+    // HASH-BASED ROUTING
+    // ============================================
+    function sectionFromHash() {
+      const sectionId = window.location.hash.replace('#', '');
+      return document.getElementById(sectionId + '-section') ? sectionId : 'home';
+    }
+
+    window.addEventListener('hashchange', function() {
+      showSection(sectionFromHash());
+    });
+
+    showSection(sectionFromHash());
 
     // ============================================
     // ACCESS REQUEST MODAL
