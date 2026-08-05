@@ -15,7 +15,7 @@ NAMECHEAP_SMTP_PORT = int(os.getenv("NAMECHEAP_SMTP_PORT", "587"))
 NAMECHEAP_EMAIL = os.getenv("NAMECHEAP_EMAIL")
 NAMECHEAP_PASSWORD = os.getenv("NAMECHEAP_PASSWORD")
 FROM_EMAIL = os.getenv("FROM_EMAIL", NAMECHEAP_EMAIL)
-CONTACT_TO_EMAIL = os.getenv("CONTACT_TO_EMAIL", NAMECHEAP_EMAIL)
+CONTACT_TO_EMAIL = os.getenv("ADMIN_EMAIL", NAMECHEAP_EMAIL)
 
 # Simple in-memory rate limiter (best-effort, per instance).
 # Key: sender email -> timestamp of last accepted submission.
