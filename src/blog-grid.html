@@ -5,15 +5,31 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Folio Bootstrap Template - Blog Grid</title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
+  <title>Blog | Manuel Gil</title>
+  <meta name="description" content="Technical articles and blog posts by Manuel Gil on data science, machine learning, and scientific computing.">
+  <meta name="keywords" content="Manuel Gil, Blog, Data Science, Machine Learning, Articles, Medium">
+  <meta name="author" content="Manuel Gil">
+  <link rel="canonical" href="https://www.manuelgil.com/blog-grid.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Blog | Manuel Gil">
+  <meta property="og:description" content="Technical articles and blog posts on data science and machine learning.">
+  <meta property="og:url" content="https://www.manuelgil.com/blog-grid.html">
+  <meta property="og:site_name" content="Manuel Gil">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Blog | Manuel Gil">
+  <meta name="twitter:description" content="Technical articles and blog posts on data science and machine learning.">
 
   <!-- Favicons -->
   <link href="assets/img/favicon.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css?family=Poppins:300,300i,400,400i,500,500i,600,600i,700,700i|Playfair+Display:400,400i,500,500i,600,600i,700,700i,900,900i" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
@@ -41,24 +57,12 @@
   <header id="header" class="fixed-top header-inner-pages">
     <div class="container d-flex align-items-center justify-content-between">
 
-      <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>
+      <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="Manuel Gil - home" class="img-fluid"></a>
       <!-- Uncomment below if you prefer to use an text logo -->
       <!-- <h1 class="logo"><a href="index.html">Folio</a></h1> -->
 
       <nav id="navbar" class="navbar">
-        <ul>
-          <li><a class="nav-link scrollto " href="index.html#hero">Home</a></li>
-          <li><a class="nav-link scrollto" href="index.html#about">About</a></li>
-          <li><a class="nav-link  scrollto" href="index.html#portfolio">Portfolio</a></li>
-          <li><a class="nav-link active  scrollto" href="index.html#journal">Blog</a></li>
-          <li class="dropdown"><a href="#"><span>YouWiki</span> <i class="bi bi-chevron-down"></i></a>
-            <ul>
-              <li><a href="../docs/site_en/index.html" target="_blank">English</a></li>
-              <li><a href="../docs/site_es/index.html" target="_blank">Español</a></li>
-            </ul>
-          </li>
-          <li><a class="nav-link scrollto" href="index.html#contact">Contact</a></li>
-        </ul>
+        <ul id="nav-main"></ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
 
@@ -83,7 +87,7 @@
             <div class="col-lg-4 col-md-6">
               <div class="journal-info mb-30">
 
-                <a href="blog-single.html"><img src="assets/img/blog-post-1.jpg" class="img-responsive" alt="img"></a>
+                <a href="blog-single.html"><img src="assets/img/blog-post-1.jpg" class="img-responsive" alt="Blog post thumbnail"></a>
 
                 <div class="journal-txt">
 
@@ -99,7 +103,7 @@
             <div class="col-lg-4 col-md-6">
               <div class="journal-info mb-30">
 
-                <a href="blog-single.html"><img src="assets/img/blog-post-2.jpg" class="img-responsive" alt="img"></a>
+                <a href="blog-single.html"><img src="assets/img/blog-post-2.jpg" class="img-responsive" alt="Blog post thumbnail"></a>
 
                 <div class="journal-txt">
 
@@ -115,7 +119,7 @@
             <div class="col-lg-4 col-md-6">
               <div class="journal-info mb-30">
 
-                <a href="blog-single.html"><img src="assets/img/blog-post-3.jpg" class="img-responsive" alt="img"></a>
+                <a href="blog-single.html"><img src="assets/img/blog-post-3.jpg" class="img-responsive" alt="Blog post thumbnail"></a>
 
                 <div class="journal-txt">
 
@@ -131,7 +135,7 @@
             <div class="col-lg-4 col-md-6">
               <div class="journal-info mb-30">
 
-                <a href="blog-single.html"><img src="assets/img/blog-post-1.jpg" class="img-responsive" alt="img"></a>
+                <a href="blog-single.html"><img src="assets/img/blog-post-1.jpg" class="img-responsive" alt="Blog post thumbnail"></a>
 
                 <div class="journal-txt">
 
@@ -147,7 +151,7 @@
             <div class="col-lg-4 col-md-6">
               <div class="journal-info mb-30">
 
-                <a href="blog-single.html"><img src="assets/img/blog-post-2.jpg" class="img-responsive" alt="img"></a>
+                <a href="blog-single.html"><img src="assets/img/blog-post-2.jpg" class="img-responsive" alt="Blog post thumbnail"></a>
 
                 <div class="journal-txt">
 
@@ -163,7 +167,7 @@
             <div class="col-lg-4 col-md-6">
               <div class="journal-info mb-30">
 
-                <a href="blog-single.html"><img src="assets/img/blog-post-3.jpg" class="img-responsive" alt="img"></a>
+                <a href="blog-single.html"><img src="assets/img/blog-post-3.jpg" class="img-responsive" alt="Blog post thumbnail"></a>
 
                 <div class="journal-txt">
 
@@ -220,9 +224,9 @@
   <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
   <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
   <script src="assets/vendor/typed.js/typed.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
 
   <!-- Template Main JS File -->
+  <script src="assets/js/nav.js"></script>
   <script src="assets/js/main.js"></script>
 
 </body>
