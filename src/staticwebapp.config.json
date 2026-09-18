@@ -1,0 +1,6 @@
+{
+  "mimeTypes": {
+    ".json": "text/json",
+    ".wasm": "application/wasm"
+  }
+}

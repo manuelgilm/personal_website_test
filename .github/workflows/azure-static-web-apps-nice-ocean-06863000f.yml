@@ -45,7 +45,6 @@ jobs:
           cp -r docs/site_es src/docs/site_es
           cp -r docs/build/mlflow/* src/mlflow/ || true
           cp -r docs/build/bot/* src/bot/ || true
-          cp staticwebapp.json src/staticwebapp.json
                     
       - name: Build And Deploy
         id: builddeploy

@@ -1,4 +1,5 @@
 site_name: "YouWiki"
+site_url: https://gilmanuel.com/docs/site_en/
 theme:
   name: material
   features:
