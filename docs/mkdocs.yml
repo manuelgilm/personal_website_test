@@ -2,6 +2,7 @@ site_name: "YouWiki"
 site_url: https://gilmanuel.com/docs/site_en/
 theme:
   name: material
+  language: en
   features:
     - navigation.tabs         # Creates the top menu for channels
     - navigation.sections     # Groups playlists nicely in the left sidebar
@@ -9,6 +10,15 @@ theme:
 
 # Default to English (change to docs/es for Spanish)
 docs_dir: docs/en
+
+extra:
+  alternate:
+    - name: English
+      link: /docs/site_en/
+      lang: en
+    - name: Español
+      link: /docs/site_es/
+      lang: es
 
 nav:
   - Home: index.md
