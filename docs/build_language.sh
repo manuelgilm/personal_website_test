@@ -7,21 +7,25 @@ SITE_DIR="site_${LANGUAGE}"
 case $LANGUAGE in
   en)
     echo "Building English version..."
-    sed -i "s/docs_dir: docs\/es/docs_dir: docs\/en/" mkdocs.yml
+    sed -i "s#site_url: https://gilmanuel.com/docs/site_es/#site_url: https://gilmanuel.com/docs/site_en/#" mkdocs.yml
+    sed -i "s#docs_dir: docs/es#docs_dir: docs/en#" mkdocs.yml
     mkdocs build -d "$SITE_DIR"
     ;;
   es)
     echo "Building Spanish version..."
-    sed -i "s/docs_dir: docs\/en/docs_dir: docs\/es/" mkdocs.yml
+    sed -i "s#site_url: https://gilmanuel.com/docs/site_en/#site_url: https://gilmanuel.com/docs/site_es/#" mkdocs.yml
+    sed -i "s#docs_dir: docs/en#docs_dir: docs/es#" mkdocs.yml
     mkdocs build -d "$SITE_DIR"
     ;;
   serve)
     LANG=${2:-en}
     echo "Serving $LANG version on http://localhost:8000"
     if [ "$LANG" = "en" ]; then
-      sed -i "s/docs_dir: docs\/es/docs_dir: docs\/en/" mkdocs.yml
+      sed -i "s#site_url: https://gilmanuel.com/docs/site_es/#site_url: https://gilmanuel.com/docs/site_en/#" mkdocs.yml
+      sed -i "s#docs_dir: docs/es#docs_dir: docs/en#" mkdocs.yml
     else
-      sed -i "s/docs_dir: docs\/en/docs_dir: docs\/es/" mkdocs.yml
+      sed -i "s#site_url: https://gilmanuel.com/docs/site_en/#site_url: https://gilmanuel.com/docs/site_es/#" mkdocs.yml
+      sed -i "s#docs_dir: docs/en#docs_dir: docs/es#" mkdocs.yml
     fi
     mkdocs serve
     ;;
