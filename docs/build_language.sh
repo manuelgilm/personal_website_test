@@ -9,12 +9,14 @@ case $LANGUAGE in
     echo "Building English version..."
     sed -i "s#site_url: https://gilmanuel.com/docs/site_es/#site_url: https://gilmanuel.com/docs/site_en/#" mkdocs.yml
     sed -i "s#docs_dir: docs/es#docs_dir: docs/en#" mkdocs.yml
+    sed -i "s#language: es#language: en#" mkdocs.yml
     mkdocs build -d "$SITE_DIR"
     ;;
   es)
     echo "Building Spanish version..."
     sed -i "s#site_url: https://gilmanuel.com/docs/site_en/#site_url: https://gilmanuel.com/docs/site_es/#" mkdocs.yml
     sed -i "s#docs_dir: docs/en#docs_dir: docs/es#" mkdocs.yml
+    sed -i "s#language: en#language: es#" mkdocs.yml
     mkdocs build -d "$SITE_DIR"
     ;;
   serve)
@@ -23,9 +25,11 @@ case $LANGUAGE in
     if [ "$LANG" = "en" ]; then
       sed -i "s#site_url: https://gilmanuel.com/docs/site_es/#site_url: https://gilmanuel.com/docs/site_en/#" mkdocs.yml
       sed -i "s#docs_dir: docs/es#docs_dir: docs/en#" mkdocs.yml
+      sed -i "s#language: es#language: en#" mkdocs.yml
     else
       sed -i "s#site_url: https://gilmanuel.com/docs/site_en/#site_url: https://gilmanuel.com/docs/site_es/#" mkdocs.yml
       sed -i "s#docs_dir: docs/en#docs_dir: docs/es#" mkdocs.yml
+      sed -i "s#language: en#language: es#" mkdocs.yml
     fi
     mkdocs serve
     ;;
