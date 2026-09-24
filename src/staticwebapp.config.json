@@ -1,4 +1,11 @@
 {
+  "routes": [
+    {
+      "route": "/index.html",
+      "redirect": "/",
+      "statusCode": 301
+    }
+  ],
   "mimeTypes": {
     ".json": "text/json",
     ".wasm": "application/wasm"

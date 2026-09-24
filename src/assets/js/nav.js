@@ -11,7 +11,7 @@
   var path = window.location.pathname.split('/').pop() || 'index.html';
   var isHome = path === 'index.html';
   // Link prefix for single-page section links on non-index pages.
-  var p = isHome ? '#' : 'index.html#';
+  var p = isHome ? '#' : '/#';
   // Which nav item should be highlighted on this page.
   var activeItem = isHome ? (window.location.hash.replace('#', '') || 'hero')
     : (path.indexOf('ai-room') !== -1 ? 'ai-room'
