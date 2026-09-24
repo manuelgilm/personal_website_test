@@ -1,0 +1,13 @@
+{#-
+  Custom theme override: emit hreflang alternate links for EN/ES docs.
+-#}
+{% extends "base.html" %}
+
+{% block extrahead %}
+  {{ super() }}
+  {% if page and page.canonical_url %}
+  <link rel="alternate" hreflang="en" href="{{ page.canonical_url | replace('/site_es/', '/site_en/') }}">
+  <link rel="alternate" hreflang="es" href="{{ page.canonical_url | replace('/site_en/', '/site_es/') }}">
+  <link rel="alternate" hreflang="x-default" href="{{ page.canonical_url | replace('/site_es/', '/site_en/') }}">
+  {% endif %}
+{% endblock %}

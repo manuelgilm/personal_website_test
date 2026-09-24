@@ -1,3 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://gilmanuel.com/docs/site_es/</loc>
+         <lastmod>2026-09-24</lastmod>
+    </url>
+    <url>
+         <loc>https://gilmanuel.com/docs/site_es/engineering_channel/</loc>
+         <lastmod>2026-09-24</lastmod>
+    </url>
+    <url>
+         <loc>https://gilmanuel.com/docs/site_es/engineering_channel/yt_bot_series/01_architecture_and_setup/</loc>
+         <lastmod>2026-09-24</lastmod>
+    </url>
+    <url>
+         <loc>https://gilmanuel.com/docs/site_es/engineering_channel/yt_bot_series/02_skeleton_bot/</loc>
+         <lastmod>2026-09-24</lastmod>
+    </url>
+    <url>
+         <loc>https://gilmanuel.com/docs/site_es/engineering_channel/yt_bot_series/03_prompt_engineering_mlflow/</loc>
+         <lastmod>2026-09-24</lastmod>
+    </url>
+    <url>
+         <loc>https://gilmanuel.com/docs/site_es/engineering_channel/yt_bot_series/04_github_actions/</loc>
+         <lastmod>2026-09-24</lastmod>
+    </url>
+    <url>
+         <loc>https://gilmanuel.com/docs/site_es/engineering_channel/yt_bot_series/05_system_as_whole/</loc>
+         <lastmod>2026-09-24</lastmod>
+    </url>
 </urlset>

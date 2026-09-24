@@ -3,6 +3,7 @@ site_url: https://gilmanuel.com/docs/site_en/
 theme:
   name: material
   language: en
+  custom_dir: overrides
   features:
     - navigation.tabs         # Creates the top menu for channels
     - navigation.sections     # Groups playlists nicely in the left sidebar

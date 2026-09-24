@@ -1,6 +1,6 @@
 
 <!doctype html>
-<html lang="es" class="no-js">
+<html lang="en" class="no-js">
   <head>
     
       <meta charset="utf-8">
@@ -8,8 +8,10 @@
       
       
       
-        <link rel="canonical" href="https://gilmanuel.com/docs/site_es/engineering_channel/yt_bot_series/01_architecture_and_setup/">
+        <link rel="canonical" href="https://gilmanuel.com/docs/site_en/engineering_channel/automating_youtube_with_ai/01_intro/">
       
+      
+        <link rel="prev" href="../../">
       
       
       
@@ -25,7 +27,7 @@
     
     
       
-        <title>Serie 1: Interactuando con la API de YouTube - YouWiki</title>
+        <title>Automating YouTube with AI - YouWiki</title>
       
     
     
@@ -56,9 +58,9 @@
     
   
   
-  <link rel="alternate" hreflang="en" href="https://gilmanuel.com/docs/site_en/engineering_channel/yt_bot_series/01_architecture_and_setup/">
-  <link rel="alternate" hreflang="es" href="https://gilmanuel.com/docs/site_es/engineering_channel/yt_bot_series/01_architecture_and_setup/">
-  <link rel="alternate" hreflang="x-default" href="https://gilmanuel.com/docs/site_en/engineering_channel/yt_bot_series/01_architecture_and_setup/">
+  <link rel="alternate" hreflang="en" href="https://gilmanuel.com/docs/site_en/engineering_channel/automating_youtube_with_ai/01_intro/">
+  <link rel="alternate" hreflang="es" href="https://gilmanuel.com/docs/site_es/engineering_channel/automating_youtube_with_ai/01_intro/">
+  <link rel="alternate" hreflang="x-default" href="https://gilmanuel.com/docs/site_en/engineering_channel/automating_youtube_with_ai/01_intro/">
   
 
   </head>
@@ -73,8 +75,8 @@
     <div data-md-component="skip">
       
         
-        <a href="#serie-1-interactuando-con-la-api-de-youtube" class="md-skip">
-          Saltar a contenido
+        <a href="#what-are-we-building" class="md-skip">
+          Skip to content
         </a>
       
     </div>
@@ -86,7 +88,7 @@
       
 
 <header class="md-header" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+  <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../../.." title="YouWiki" class="md-header__button md-logo" aria-label="YouWiki" data-md-component="logo">
       
   
@@ -107,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Serie 1: Interactuando con la API de YouTube
+              Automating YouTube with AI
             
           </span>
         </div>
@@ -121,7 +123,7 @@
       <div class="md-header__option">
   <div class="md-select">
     
-    <button class="md-header__button md-icon" aria-label="Seleccionar idioma">
+    <button class="md-header__button md-icon" aria-label="Select language">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
     </button>
     <div class="md-select__inner">
@@ -155,16 +157,16 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
       <label class="md-search__icon md-icon" for="__search">
         
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
         
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
       </label>
-      <nav class="md-search__options" aria-label="Buscar">
+      <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
@@ -175,7 +177,7 @@
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
         <div class="md-search-result" data-md-component="search-result">
           <div class="md-search-result__meta">
-            Inicializando búsqueda
+            Initializing search
           </div>
           <ol class="md-search-result__list" role="presentation"></ol>
         </div>
@@ -196,7 +198,7 @@
         
           
             
-<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
   <div class="md-grid">
     <ul class="md-tabs__list">
       
@@ -223,10 +225,12 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../../" class="md-tabs__link">
           
   
@@ -261,7 +265,7 @@
   
 
 
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../../.." title="YouWiki" class="md-nav__button md-logo" aria-label="YouWiki" data-md-component="logo">
       
@@ -305,6 +309,8 @@
       
   
   
+    
+  
   
   
     
@@ -320,16 +326,19 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           <div class="md-nav__link md-nav__container">
@@ -351,13 +360,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -374,10 +383,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../automating_youtube_with_ai/01_intro.md" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automating YouTube with AI
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -393,6 +429,81 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The problem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-solution-tubectl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The solution: tubectl
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-role-of-mlflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The role of MLflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#series-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Series overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -418,7 +529,7 @@
                   <div class="md-sidebar__inner">
                     
 
-<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
   
@@ -427,15 +538,15 @@
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
-      Tabla de contenidos
+      Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#enfoque-obteniendo-los-materiales-brutos" class="md-nav__link">
+  <a href="#the-problem" class="md-nav__link">
     <span class="md-ellipsis">
       
-        🎯 Enfoque: Obteniendo los Materiales Brutos
+        The problem
       
     </span>
   </a>
@@ -443,71 +554,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#temas-cubiertos" class="md-nav__link">
+  <a href="#the-solution-tubectl" class="md-nav__link">
     <span class="md-ellipsis">
       
-        📚 Temas Cubiertos
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="📚 Temas Cubiertos">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#configurando-credenciales-de-gcp" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configurando Credenciales de GCP
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#obteniendo-comentarios" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Obteniendo Comentarios
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#autenticacion" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Autenticación
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#publicando-una-respuesta-de-prueba" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Publicando una Respuesta de Prueba
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#lo-que-construiras" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        🚀 Lo que Construirás
+        The solution: tubectl
       
     </span>
   </a>
@@ -515,10 +565,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#requisitos-previos" class="md-nav__link">
+  <a href="#the-role-of-mlflow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        📝 Requisitos Previos
+        The role of MLflow
       
     </span>
   </a>
@@ -526,10 +576,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mira-la-serie-de-videos" class="md-nav__link">
+  <a href="#series-overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        🎬 Mira la Serie de Videos
+        Series overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
       
     </span>
   </a>
@@ -553,55 +614,77 @@
 
 
 
-<h1 id="serie-1-interactuando-con-la-api-de-youtube">Serie 1: Interactuando con la API de YouTube</h1>
-<h2 id="enfoque-obteniendo-los-materiales-brutos">🎯 Enfoque: Obteniendo los Materiales Brutos</h2>
-<p>En esta serie, aprenderemos cómo interactuar con la API de YouTube para obtener los datos que necesita nuestro bot. Esta es la base: estamos obteniendo los materiales brutos con los que trabajará nuestro bot.</p>
-<h2 id="temas-cubiertos">📚 Temas Cubiertos</h2>
-<h3 id="configurando-credenciales-de-gcp">Configurando Credenciales de GCP</h3>
+<h1 id="what-are-we-building">What are we building?</h1>
+<p>Welcome to <strong>Automating YouTube with AI</strong>, a series where we build a production-grade autonomous agent that monitors a YouTube channel and replies to comments — powered by Go, MLflow, OpenAI, and GitHub Actions.</p>
+<h2 id="the-problem">The problem</h2>
+<p>As a YouTube creator grows, the comment section becomes harder to keep up with. Most questions ask about things already covered in the video, yet answering them takes time and breaks creative flow. Ignoring them hurts engagement and the algorithm.</p>
+<h2 id="the-solution-tubectl">The solution: tubectl</h2>
+<p><strong>tubectl</strong> is a Go CLI tool that connects to the YouTube Data API v3 and automates the entire reply workflow:</p>
+<ol>
+<li>A GitHub Actions workflow runs every hour (cron)</li>
+<li>Reads a YAML config of video IDs to monitor</li>
+<li>Fetches new comments since the last run</li>
+<li>Checks a local cache to avoid re-replying</li>
+<li>Retrieves the video transcript via YouTube Captions API</li>
+<li>Sends the transcript + comment to OpenAI with a system prompt</li>
+<li>Posts the generated reply back to YouTube</li>
+<li>Updates the cache for the next cycle</li>
+</ol>
+<p>All logic lives in the <code>tubectl</code> binary — the workflow is just the scheduler.</p>
+<h2 id="the-role-of-mlflow">The role of MLflow</h2>
+<p>The bot's intelligence comes from its system prompt. We use MLflow to treat prompt engineering as a proper ML workflow:</p>
 <ul>
-<li>Crear un Proyecto en Google Cloud</li>
-<li>Habilitar YouTube Data API v3</li>
-<li>Generar credenciales OAuth 2.0</li>
-<li>Almacenar y gestionar claves API de forma segura</li>
+<li>Define candidate prompts (zero-shot, few-shot, role, role+CoT)</li>
+<li>Run them against a synthetic Q&amp;A dataset</li>
+<li>Track metrics, parameters, and traces in MLflow</li>
+<li>Compare experiments and promote a <strong>champion prompt</strong> to production</li>
 </ul>
-<h3 id="obteniendo-comentarios">Obteniendo Comentarios</h3>
+<h2 id="series-overview">Series overview</h2>
+<table>
+<thead>
+<tr>
+<th>Video</th>
+<th>Title</th>
+<th>What you will learn</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>The Blueprint</strong></td>
+<td>Full architecture walkthrough, dataset creation, evaluation framework</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>The Prompt Showdown</strong></td>
+<td>4 prompting techniques, MLflow experiment tracking, champion selection</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>tubectl: The YouTube Connector</strong></td>
+<td>CLI structure, comments, transcripts, the <code>bot answer-comment</code> command</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>The Inference Pipeline</strong></td>
+<td>Runtime journey: trigger → cache → transcript → LLM → post</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Production: From Cron to Live</strong></td>
+<td>GitHub Actions, secrets, live demo, monitoring</td>
+</tr>
+</tbody>
+</table>
+<h2 id="prerequisites">Prerequisites</h2>
 <ul>
-<li>Consultar comentarios de videos de YouTube usando la API</li>
-<li>Filtrar y analizar datos de comentarios</li>
-<li>Manejar paginación para grandes conjuntos de comentarios</li>
-<li>Mejores prácticas para limitar la velocidad de API</li>
+<li>Basic knowledge of Python and the command line</li>
+<li>A Google Cloud Platform project with the YouTube Data API v3 enabled</li>
+<li>An OpenAI API key</li>
+<li>A GitHub repository</li>
+<li>MLflow installed (local or remote tracking server)</li>
 </ul>
-<h3 id="autenticacion">Autenticación</h3>
-<ul>
-<li>Implementar flujo de autenticación OAuth 2.0</li>
-<li>Manejar tokens de renovación</li>
-<li>Gestionar la expiración y renovación de tokens</li>
-</ul>
-<h3 id="publicando-una-respuesta-de-prueba">Publicando una Respuesta de Prueba</h3>
-<ul>
-<li>Estructurar cargas útiles de respuesta</li>
-<li>Publica tu primera respuesta programática a un comentario de YouTube</li>
-<li>Manejar respuestas exitosas y de error</li>
-</ul>
-<h2 id="lo-que-construiras">🚀 Lo que Construirás</h2>
-<p>Al final de esta serie, tendrás:
-- ✅ Una configuración de GCP funcional con acceso a YouTube API
-- ✅ Código que obtiene comentarios de un video objetivo
-- ✅ Flujo de autenticación que maneja credenciales
-- ✅ Capacidad para publicar respuestas de prueba programáticamente</p>
-<h2 id="requisitos-previos">📝 Requisitos Previos</h2>
-<ul>
-<li>Conocimiento básico de Python</li>
-<li>Cuenta de Google con capacidad de crear proyectos de GCP</li>
-<li>Comprensión de APIs y solicitudes HTTP</li>
-</ul>
-<h2 id="mira-la-serie-de-videos">🎬 Mira la Serie de Videos</h2>
-<p>Sigue junto con los videos de YouTube y usa esta guía para:
-- Copiar fragmentos de código
-- Consultar pasos de configuración
-- Solucionar problemas comunes</p>
-<hr />
-<p><strong>Próximo Paso:</strong> Sigue el video para configurar tu proyecto de GCP, luego regresa aquí para ejemplos de código y explicaciones detalladas.</p>
+<p>Let's build something real.</p>
 
 
 
@@ -651,7 +734,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.indexes"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.indexes"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
