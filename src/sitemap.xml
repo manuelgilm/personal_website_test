@@ -2,92 +2,87 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://gilmanuel.com/</loc>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-09-24</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://gilmanuel.com/ai-room.html</loc>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://gilmanuel.com/portfolio-details.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://gilmanuel.com/blog-grid.html</loc>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gilmanuel.com/docs/site_en/index.html</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://gilmanuel.com/docs/site_en/engineering_channel/index.html</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://gilmanuel.com/docs/site_en/engineering_channel/yt_bot_series/01_architecture_and_setup/index.html</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://gilmanuel.com/docs/site_en/engineering_channel/yt_bot_series/02_skeleton_bot/index.html</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://gilmanuel.com/docs/site_en/engineering_channel/yt_bot_series/03_prompt_engineering_mlflow/index.html</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://gilmanuel.com/docs/site_en/engineering_channel/yt_bot_series/04_github_actions/index.html</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://gilmanuel.com/docs/site_en/engineering_channel/yt_bot_series/05_system_as_whole/index.html</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://gilmanuel.com/docs/site_es/index.html</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://gilmanuel.com/docs/site_es/engineering_channel/index.html</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://gilmanuel.com/docs/site_es/engineering_channel/yt_bot_series/01_architecture_and_setup/index.html</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://gilmanuel.com/docs/site_es/engineering_channel/yt_bot_series/02_skeleton_bot/index.html</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://gilmanuel.com/docs/site_es/engineering_channel/yt_bot_series/03_prompt_engineering_mlflow/index.html</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://gilmanuel.com/docs/site_es/engineering_channel/yt_bot_series/04_github_actions/index.html</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://gilmanuel.com/docs/site_es/engineering_channel/yt_bot_series/05_system_as_whole/index.html</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-09-24</lastmod>
     <priority>0.5</priority>
   </url>
 </urlset>
