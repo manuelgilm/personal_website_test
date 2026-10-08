@@ -1,0 +1,17 @@
+---
+import ArticlePage from "../../../components/ArticlePage.astro";
+import { articlePath, getArticles } from "../../../lib/articles";
+
+export async function getStaticPaths() {
+  const prefix = "games/devlogs/";
+  const entries = await getArticles("en", { vertical: "games", kind: "devlog" });
+  return entries.map((entry) => {
+    const path = articlePath(entry);
+    return { params: { slug: path.slice(prefix.length) }, props: { path } };
+  });
+}
+
+const { path } = Astro.props;
+---
+
+<ArticlePage path={path} />

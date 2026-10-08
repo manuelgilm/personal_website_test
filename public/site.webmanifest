@@ -1,0 +1,15 @@
+{
+  "name": "Manuel Gil",
+  "short_name": "Manuel Gil",
+  "description": "Data Scientist and Machine Learning Engineer. Technical tutorials and articles, and stories from the road.",
+  "icons": [
+    {
+      "src": "/assets/img/apple-touch-icon.png",
+      "sizes": "any",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#0b0c10",
+  "background_color": "#0b0c10",
+  "display": "standalone"
+}

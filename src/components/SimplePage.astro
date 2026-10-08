@@ -1,0 +1,27 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { defaultLang, type Lang, type UIKey } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
+
+interface Props {
+  page: "about" | "contact";
+  jsonLd?: Record<string, unknown>[];
+}
+
+const { page, jsonLd } = Astro.props;
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={t(`${page}.title` as UIKey)}
+  description={t(`${page}.description` as UIKey)}
+  jsonLd={jsonLd}
+>
+  <section class="section">
+    <div class="container">
+      <h1>{t(`${page}.lead` as UIKey)}</h1>
+      <slot />
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,51 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { defaultLang, type Lang, type UIKey } from "../i18n/ui";
+import { localizePath, useTranslations } from "../i18n/utils";
+
+interface Props {
+  pillar: "ai" | "rides";
+}
+
+const { pillar } = Astro.props;
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+
+const sections =
+  pillar === "ai" ? ["tutorials", "articles", "projects"] : ["routes", "stories"];
+
+const cards = sections.map((section) => {
+  const labelKey = `${pillar}.${section}` as UIKey;
+  const descKey = `${pillar}.${section}.description` as UIKey;
+  return {
+    title: t(labelKey),
+    description: t(descKey),
+    href: localizePath(lang, `${pillar}/${section}`),
+  };
+});
+---
+
+<BaseLayout title={t(`${pillar}.title` as UIKey)} description={t(`${pillar}.description` as UIKey)}>
+  <section class="hero">
+    <div class="container">
+      <h1>{t(`nav.${pillar}` as UIKey)}</h1>
+      <p class="lead">{t(`${pillar}.lead` as UIKey)}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="grid">
+        {
+          cards.map((card) => (
+            <article class="card">
+              <h3><a href={card.href}>{card.title}</a></h3>
+              <p>{card.description}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+  <slot />
+</BaseLayout>

@@ -1,0 +1,223 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { defaultLang, type Lang } from "../i18n/ui";
+import { localizePath, useTranslations } from "../i18n/utils";
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+
+const copy = {
+  en: {
+    title: "MLflow Server | Manuel Gil",
+    description:
+      "An open MLflow server for hands-on experiment tracking: register models, compare runs and explore the model registry.",
+    lead: "An open MLflow server for hands-on experiment tracking.",
+    aboutTitle: "About",
+    about:
+      "MLflow is a platform to manage the ML lifecycle: experimentation, reproducibility, deployment and a central model registry. This instance is hosted for community use and experimentation.",
+    featuresTitle: "What you can do",
+    features: [
+      "Track experiments and parameters",
+      "Compare model performance",
+      "Manage model versions",
+      "Register and deploy models",
+    ],
+    disclaimer:
+      "Personal project with no affiliation with Databricks or the official MLflow project. Use at your own discretion; for production, refer to the official MLflow documentation.",
+    getAccess: "Get access",
+    contribute: "Contribute (Ko-fi)",
+    requestTitle: "Request access to the MLflow server",
+    requestAbout:
+      "Enter your email and we'll create an account and workspace for you, then send the credentials to your inbox.",
+    emailLabel: "Email address",
+    emailHint: "We'll send your access credentials to this email.",
+    emailPlaceholder: "your.email@example.com",
+    cancel: "Cancel",
+    submit: "Request access",
+    sending: "Sending…",
+    successTitle: "Request submitted",
+    successText:
+      "Your credentials are on the way. Check your inbox in the next few minutes (and your spam folder).",
+    close: "Got it",
+    invalidEmail: "Please enter a valid email address.",
+    genericError: "Failed to process your request.",
+    networkError: "Failed to connect to the server. Please try again later.",
+  },
+  es: {
+    title: "Servidor MLflow | Manuel Gil",
+    description:
+      "Un servidor de MLflow abierto para practicar el tracking de experimentos: registra modelos, compara ejecuciones y explora el registro de modelos.",
+    lead: "Un servidor de MLflow abierto para practicar el tracking de experimentos.",
+    aboutTitle: "Acerca de",
+    about:
+      "MLflow es una plataforma para gestionar el ciclo de vida del ML: experimentación, reproducibilidad, despliegue y un registro central de modelos. Esta instancia está alojada para uso comunitario y experimentación.",
+    featuresTitle: "Qué puedes hacer",
+    features: [
+      "Registrar experimentos y parámetros",
+      "Comparar el rendimiento de modelos",
+      "Gestionar versiones de modelos",
+      "Registrar y desplegar modelos",
+    ],
+    disclaimer:
+      "Proyecto personal sin afiliación con Databricks ni con el proyecto oficial de MLflow. Úsalo bajo tu propio criterio; para producción, consulta la documentación oficial de MLflow.",
+    getAccess: "Solicitar acceso",
+    contribute: "Contribuir (Ko-fi)",
+    requestTitle: "Solicita acceso al servidor de MLflow",
+    requestAbout:
+      "Ingresa tu correo y crearemos una cuenta y un espacio de trabajo para ti, y enviaremos las credenciales a tu bandeja.",
+    emailLabel: "Correo electrónico",
+    emailHint: "Enviaremos tus credenciales de acceso a este correo.",
+    emailPlaceholder: "tu.correo@ejemplo.com",
+    cancel: "Cancelar",
+    submit: "Solicitar acceso",
+    sending: "Enviando…",
+    successTitle: "Solicitud enviada",
+    successText:
+      "Tus credenciales están en camino. Revisa tu bandeja en los próximos minutos (y la carpeta de spam).",
+    close: "Entendido",
+    invalidEmail: "Ingresa un correo electrónico válido.",
+    genericError: "No se pudo procesar tu solicitud.",
+    networkError: "No se pudo conectar con el servidor. Inténtalo más tarde.",
+  },
+}[lang];
+---
+
+<BaseLayout title={copy.title} description={copy.description}>
+  <section class="section">
+    <div class="container">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href={localizePath(lang, "")}>{t("nav.home")}</a>
+        <span aria-hidden="true">/</span>
+        <a href={localizePath(lang, "ai")}>{t("nav.ai")}</a>
+        <span aria-hidden="true">/</span>
+        <a href={localizePath(lang, "ai/projects")}>{t("ai.projects")}</a>
+      </nav>
+
+      <h1>MLflow Server</h1>
+      <p class="lead">{copy.lead}</p>
+
+      <div class="prose">
+        <h2>{copy.aboutTitle}</h2>
+        <p>{copy.about}</p>
+
+        <h2>{copy.featuresTitle}</h2>
+        <ul>
+          {copy.features.map((feature) => <li>{feature}</li>)}
+        </ul>
+
+        <p class="muted small">{copy.disclaimer}</p>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" type="button" data-open-access>{copy.getAccess}</button>
+        <a
+          class="btn"
+          href="https://ko-fi.com/kofisupporter95420"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {copy.contribute}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <dialog class="room-dialog" id="access-dialog" aria-labelledby="access-dialog-title">
+    <div class="room-dialog-inner">
+      <h2 id="access-dialog-title">{copy.requestTitle}</h2>
+      <p class="muted">{copy.requestAbout}</p>
+      <form class="room-form" id="access-form" novalidate>
+        <label for="access-email">{copy.emailLabel}</label>
+        <input
+          type="email"
+          id="access-email"
+          name="email"
+          placeholder={copy.emailPlaceholder}
+          autocomplete="email"
+          required
+        />
+        <p class="field-hint">{copy.emailHint}</p>
+        <p class="form-error" id="access-error" hidden></p>
+        <div class="room-dialog-actions">
+          <button type="button" class="btn" data-close-access>{copy.cancel}</button>
+          <button type="submit" class="btn primary" id="access-submit">{copy.submit}</button>
+        </div>
+      </form>
+      <div class="room-success" id="access-success" hidden>
+        <h3>{copy.successTitle}</h3>
+        <p class="muted">{copy.successText}</p>
+        <button type="button" class="btn primary" data-close-access>{copy.close}</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script
+    define:vars={{
+      invalidEmail: copy.invalidEmail,
+      genericError: copy.genericError,
+      networkError: copy.networkError,
+      sending: copy.sending,
+      submit: copy.submit,
+    }}
+  >
+    (function () {
+      const dialog = document.getElementById("access-dialog");
+      const form = document.getElementById("access-form");
+      const errorEl = document.getElementById("access-error");
+      const successEl = document.getElementById("access-success");
+      const submitBtn = document.getElementById("access-submit");
+
+      document.querySelectorAll("[data-open-access]").forEach((button) => {
+        button.addEventListener("click", () => {
+          errorEl.hidden = true;
+          successEl.hidden = true;
+          form.hidden = false;
+          dialog.showModal();
+        });
+      });
+
+      dialog.addEventListener("click", (event) => {
+        if (event.target.closest("[data-close-access]")) dialog.close();
+      });
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const email = form.email.value.trim();
+        errorEl.hidden = true;
+
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+          errorEl.textContent = invalidEmail;
+          errorEl.hidden = false;
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = sending;
+
+        fetch("/api/mlflow_server", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email, service: "mlflow" }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              form.hidden = true;
+              successEl.hidden = false;
+            } else {
+              errorEl.textContent = data.message || genericError;
+              errorEl.hidden = false;
+            }
+          })
+          .catch(() => {
+            errorEl.textContent = networkError;
+            errorEl.hidden = false;
+          })
+          .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = submit;
+          });
+      });
+    })();
+  </script>
+</BaseLayout>

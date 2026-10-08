@@ -1,0 +1,51 @@
+---
+import { defaultLang, type Lang } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+
+const playlists = [
+  {
+    title: "MLflow for ML Dev",
+    description: {
+      en: "Track, manage and deploy machine learning models.",
+      es: "Rastrea, gestiona y despliega modelos de machine learning.",
+    },
+    href: "https://www.youtube.com/playlist?list=PLQqR_3C2fhUUOmaeowgv4WquvH515zVmo",
+  },
+  {
+    title: "Engineering Channel",
+    description: {
+      en: "Tutorials and project walkthroughs.",
+      es: "Tutoriales y recorridos de proyectos.",
+    },
+    href: "https://www.youtube.com/playlist?list=PLQqR_3C2fhUUkoXAcomOxcvfPwRn90U-g",
+  },
+];
+---
+
+<section class="section">
+  <div class="container">
+    <h2>{t("ai.watch")}</h2>
+    <p class="lead">{t("ai.watch.description")}</p>
+    <div class="grid">
+      {
+        playlists.map((playlist) => (
+          <article class="card">
+            <h3>{playlist.title}</h3>
+            <p>{playlist.description[lang]}</p>
+            <a
+              class="btn"
+              href={playlist.href}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t("ai.watch")}
+            </a>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

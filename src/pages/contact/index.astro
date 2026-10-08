@@ -1,0 +1,45 @@
+---
+import SimplePage from "../../components/SimplePage.astro";
+import ContactForm from "../../components/ContactForm.astro";
+import { SITE } from "../../consts";
+import { defaultLang, type Lang } from "../../i18n/ui";
+import { useTranslations } from "../../i18n/utils";
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+
+const site = Astro.site ?? new URL(SITE.url);
+const canonical = new URL(Astro.url.pathname, site).href;
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    name: t("contact.title"),
+    url: canonical,
+    mainEntity: {
+      "@type": "Person",
+      name: SITE.name,
+      email: `mailto:${SITE.email}`,
+    },
+  },
+];
+---
+
+<SimplePage page="contact" jsonLd={jsonLd}>
+  <p class="lead">{t("contact.intro")}</p>
+
+  <div class="contact-layout">
+    <aside class="contact-details">
+      <div>
+        <h2>{t("contact.details.email")}</h2>
+        <p><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+      </div>
+      <div>
+        <h2>{t("contact.details.location")}</h2>
+        <p>{SITE.location}</p>
+      </div>
+    </aside>
+
+    <ContactForm />
+  </div>
+</SimplePage>

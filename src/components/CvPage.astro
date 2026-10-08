@@ -1,0 +1,128 @@
+---
+import { existsSync } from "node:fs";
+import { resolve } from "node:path";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { SITE } from "../consts";
+import { defaultLang, type Lang } from "../i18n/ui";
+import { localizePath, useTranslations } from "../i18n/utils";
+import { cv } from "../data/cv";
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const content = cv[lang];
+
+const pdfFile = lang === "es" ? "manuel-gil-cv-es.pdf" : "manuel-gil-cv-en.pdf";
+const pdfPath = `/cv/${pdfFile}`;
+// Only show the download button once the PDF actually exists in public/cv/.
+const pdfExists = existsSync(resolve(process.cwd(), "public", "cv", pdfFile));
+
+const socialUrl = (needle: string): string | undefined =>
+  SITE.sameAs.find((url) => url.includes(needle));
+
+const links = [
+  { label: "LinkedIn", href: socialUrl("linkedin") },
+  { label: "GitHub", href: socialUrl("github") },
+].filter((link): link is { label: string; href: string } => Boolean(link.href));
+---
+
+<BaseLayout title={t("cv.title")} description={t("cv.description")}>
+  <section class="section">
+    <div class="container cv">
+      <header class="cv-head">
+        <h1>{SITE.name}</h1>
+        <p class="cv-role">{SITE.jobTitle}</p>
+        <ul class="cv-contact">
+          <li>{SITE.location}</li>
+          <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+          {
+            links.map((link) => (
+              <li>
+                <a href={link.href} target="_blank" rel="noopener noreferrer me">
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <div class="actions">
+          {pdfExists && (
+            <a class="btn primary" href={pdfPath} download>
+              {t("cv.download")}
+            </a>
+          )}
+          <a class="btn" href={localizePath(lang, "contact")}>{t("nav.contact")}</a>
+        </div>
+      </header>
+
+      <div class="cv-body">
+        <section class="cv-block">
+          <h2>{t("cv.summary")}</h2>
+          <p>{content.summary}</p>
+        </section>
+
+        <section class="cv-block">
+          <h2>{t("cv.experience")}</h2>
+          {
+            content.experience.map((role) => (
+              <article class="cv-item">
+                <h3>
+                  {role.title} <span class="cv-company">· {role.company}</span>
+                </h3>
+                <p class="cv-period">{role.period}</p>
+                <ul>
+                  {role.bullets.map((bullet) => (
+                    <li>{bullet}</li>
+                  ))}
+                </ul>
+              </article>
+            ))
+          }
+        </section>
+
+        <section class="cv-block">
+          <h2>{t("cv.skills")}</h2>
+          <ul class="cv-skills">
+            {
+              content.skills.map((group) => (
+                <li>
+                  <strong>{group.group}:</strong> {group.items}
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+
+        <section class="cv-block">
+          <h2>{t("cv.education")}</h2>
+          {
+            content.education.map((item) => (
+              <div class="cv-item">
+                <h3>{item.degree}</h3>
+                <p class="cv-period">
+                  {item.institution} · {item.period}
+                </p>
+              </div>
+            ))
+          }
+        </section>
+
+        <section class="cv-block">
+          <h2>{t("cv.certificates")}</h2>
+          <ul class="cv-certs">
+            {
+              content.certificates.map((cert) => (
+                <li>
+                  <span class="cv-year">{cert.year}</span> {cert.name}
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+
+        <p class="cv-cta">
+          <a href={localizePath(lang, "ai/projects")}>{t("cv.viewProjects")}</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

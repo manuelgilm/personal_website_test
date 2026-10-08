@@ -1,0 +1,16 @@
+---
+import TutorialPage from "../../../components/TutorialPage.astro";
+import { entryPath, getTutorials } from "../../../lib/tutorials";
+
+export async function getStaticPaths() {
+  const entries = await getTutorials("en");
+  return entries
+    .map((entry) => ({ entry, path: entryPath(entry) }))
+    .filter(({ path }) => path !== "")
+    .map(({ path }) => ({ params: { slug: path }, props: { path } }));
+}
+
+const { path } = Astro.props;
+---
+
+<TutorialPage path={path} />

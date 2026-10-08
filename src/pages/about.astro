@@ -1,0 +1,36 @@
+---
+import SimplePage from "../components/SimplePage.astro";
+import { defaultLang, type Lang } from "../i18n/ui";
+import { localizePath, useTranslations } from "../i18n/utils";
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+---
+
+<SimplePage page="about">
+  <div class="prose">
+    <p class="lead">
+      I'm Manuel Gil, an AI Platform Developer and MLOps Engineer based in Zipaquirá, Colombia.
+      I care about building machine learning systems that hold up outside the notebook — from
+      experiment tracking to deployment and monitoring.
+    </p>
+    <p>
+      I work on data and ML: turning messy problems into models, and models into products. I write
+      about what I learn in <a href={localizePath(lang, "ai")}>{t("nav.ai")}</a> — mostly as
+      tutorials and longer articles — and I run an open
+      <a href={localizePath(lang, "ai/projects/mlflow")}>MLflow server</a> for anyone who wants to
+      try experiment tracking hands-on.
+    </p>
+    <p>
+      For the full picture — experience, skills and certifications — see
+      <a href={localizePath(lang, "cv")}>{t("nav.cv")}</a>.
+    </p>
+    <p>
+      Outside work I ride motorcycles. <a href={localizePath(lang, "rides")}>{t("nav.rides")}</a> is where I document routes through Colombia and the occasional longer journey: part field
+      notes, part excuse to keep riding.
+    </p>
+    <p>
+      If you'd like to collaborate, ask a question, or just say hello, <a href={localizePath(lang, "contact")}>{t("nav.contact")}</a> .
+    </p>
+  </div>
+</SimplePage>

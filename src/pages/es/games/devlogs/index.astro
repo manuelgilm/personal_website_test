@@ -1,0 +1,15 @@
+---
+import ArticleList from "../../../../components/ArticleList.astro";
+import { defaultLang, type Lang } from "../../../../i18n/ui";
+import { useTranslations } from "../../../../i18n/utils";
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+---
+
+<ArticleList
+  vertical="games"
+  kind="devlog"
+  title={t("games.devlogs")}
+  description={t("games.devlogs.description")}
+/>
