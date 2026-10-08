@@ -94,7 +94,7 @@ Here are your credentials:
 You can now log in and start tracking your ML experiments.
 
 Best regards,
-AI Room Team
+Manuel Gil
         """
 
         # HTML version
@@ -123,7 +123,7 @@ AI Room Team
     <p>You can now log in and start tracking your ML experiments.</p>
     <p style="color: #666; font-size: 12px; margin-top: 30px;">
       Best regards,<br>
-      AI Room Team
+      Manuel Gil
     </p>
   </body>
 </html>
@@ -168,7 +168,7 @@ A new MLflow user account has been created:
 - MLflow Server: {MLFLOW_SERVER_URL}
 
 Best regards,
-AI Room Team
+Manuel Gil
         """
 
         html = f"""\
@@ -202,7 +202,7 @@ AI Room Team
 
     <p style="color: #666; font-size: 12px; margin-top: 30px;">
       Best regards,<br>
-      AI Room Team
+      Manuel Gil
     </p>
   </body>
 </html>

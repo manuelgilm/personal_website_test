@@ -1,0 +1,108 @@
+---
+import { SITE } from "../consts";
+import { defaultLang, locales, type Lang } from "../i18n/ui";
+import { localizePath, stripLocale } from "../i18n/utils";
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  imageAlt?: string;
+  type?: "website" | "article";
+  publishedTime?: string;
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown>[];
+  availableLocales?: Lang[];
+}
+
+const {
+  title,
+  description,
+  image = SITE.ogImage,
+  imageAlt = SITE.name,
+  type = "website",
+  publishedTime,
+  noindex = false,
+  jsonLd = [],
+  availableLocales = locales,
+} = Astro.props;
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const path = stripLocale(Astro.url.pathname, lang);
+const site = Astro.site ?? new URL(SITE.url);
+const canonical = new URL(Astro.url.pathname, site).href;
+const ogImage = new URL(image, site).href;
+
+const ogLocale = lang === "es" ? "es_CO" : "en_US";
+
+const alternates = availableLocales.map((loc) => ({
+  lang: loc,
+  href: new URL(localizePath(loc, path), site).href,
+}));
+
+const baseJsonLd: Record<string, unknown>[] = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: SITE.name,
+    jobTitle: SITE.jobTitle,
+    email: `mailto:${SITE.email}`,
+    url: SITE.url,
+    image: new URL("/assets/img/me.jpg", site).href,
+    sameAs: SITE.sameAs,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE.name,
+    url: SITE.url,
+    description,
+  },
+];
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex ? (
+  <meta name="robots" content="noindex, nofollow" />
+) : (
+  <>
+    {alternates.map((alt) => <link rel="alternate" hreflang={alt.lang} href={alt.href} />)}
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={new URL(localizePath(defaultLang, path), site).href}
+    />
+  </>
+)}
+
+<meta property="og:type" content={type} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:alt" content={imageAlt} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:locale" content={ogLocale} />
+{type === "article" && publishedTime && <meta property="article:published_time" content={publishedTime} />}
+{
+  alternates
+    .filter((alt) => alt.lang !== lang)
+    .map((alt) => (
+      <meta property="og:locale:alternate" content={alt.lang === "es" ? "es_CO" : "en_US"} />
+    ))
+}
+
+<meta name="twitter:card" content={type === "article" ? "summary_large_image" : "summary"} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+{
+  [...baseJsonLd, ...jsonLd].map((data) => (
+    <script type="application/ld+json" set:html={JSON.stringify(data)} />
+  ))
+}

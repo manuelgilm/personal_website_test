@@ -1,0 +1,115 @@
+---
+import LanguagePicker from "./LanguagePicker.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+import { defaultLang, type Lang, type UIKey } from "../i18n/ui";
+import { localizePath, stripLocale, useTranslations } from "../i18n/utils";
+
+interface Props {
+  availableLocales?: Lang[];
+  languagePath?: string;
+  overHero?: boolean;
+}
+
+interface NavItem {
+  key: UIKey;
+  path: string;
+  children?: NavItem[];
+}
+
+const { availableLocales, languagePath, overHero } = Astro.props;
+
+const nav: NavItem[] = [
+  { key: "nav.home", path: "" },
+  {
+    key: "nav.ai",
+    path: "ai",
+    children: [
+      { key: "nav.ai.tutorials", path: "ai/tutorials" },
+      { key: "nav.ai.articles", path: "ai/articles" },
+      { key: "nav.ai.projects", path: "ai/projects" },
+    ],
+  },
+  {
+    key: "nav.rides",
+    path: "rides",
+    children: [
+      { key: "nav.rides.routes", path: "rides/routes" },
+      { key: "nav.rides.stories", path: "rides/stories" },
+    ],
+  },
+  {
+    key: "nav.games",
+    path: "games",
+    children: [
+      { key: "games.overview", path: "games" },
+      { key: "games.devlogs", path: "games/devlogs" },
+    ],
+  },
+  { key: "nav.about", path: "about" },
+  { key: "nav.cv", path: "cv" },
+  { key: "nav.contact", path: "contact" },
+];
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+
+const normalize = (p: string) => p.replace(/^\/+/, "").replace(/\/+$/, "");
+const current = normalize(stripLocale(Astro.url.pathname, lang));
+
+const isActive = (item: NavItem) => {
+  const p = normalize(item.path);
+  if (p === "") return current === "";
+  return current === p || current.startsWith(`${p}/`);
+};
+---
+
+<header
+  class="site-header"
+  data-pagefind-ignore
+  data-over-hero={overHero ? "" : undefined}
+>
+  <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+  <div class="container header-inner">
+    <a href={localizePath(lang, "")} class="brand" aria-label="Manuel Gil">Manuel Gil</a>
+
+    <label for="nav-toggle" class="nav-toggle-label" aria-label={t("nav.menu")}>
+      <span></span><span></span><span></span>
+    </label>
+
+    <nav class="site-nav" aria-label={t("nav.menu")}>
+      <ul>
+        {
+          nav.map((item) => (
+            <li class:list={[{ "has-children": item.children }, { active: isActive(item) }]}>
+              <a href={localizePath(lang, item.path)} aria-current={isActive(item) ? "page" : undefined}>
+                {t(item.key)}
+              </a>
+              {item.children && (
+                <ul class="subnav">
+                  {item.children.map((child) => (
+                    <li class:list={[{ active: isActive(child) }]}>
+                      <a href={localizePath(lang, child.path)}>{t(child.key)}</a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+      <div class="nav-tools">
+        <LanguagePicker availableLocales={availableLocales} pathOverride={languagePath} />
+        <ThemeToggle label={t("theme.toggle")} />
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>(".site-header");
+  if (header) {
+    const update = () => header.toggleAttribute("data-scrolled", window.scrollY > 40);
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+  }
+</script>

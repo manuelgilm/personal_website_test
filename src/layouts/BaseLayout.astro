@@ -1,0 +1,99 @@
+---
+import "@fontsource-variable/inter";
+import "@fontsource-variable/newsreader";
+import Seo from "../components/Seo.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { defaultLang, type Lang } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  imageAlt?: string;
+  type?: "website" | "article";
+  publishedTime?: string;
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown>[];
+  availableLocales?: Lang[];
+  languagePath?: string;
+  overHero?: boolean;
+}
+
+const props = Astro.props;
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const ga4Id = import.meta.env.PUBLIC_GA4_ID;
+const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN;
+---
+
+<!DOCTYPE html>
+<html lang={lang} data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b0c10" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="author" content="Manuel Gil" />
+    <link rel="icon" type="image/png" href="/assets/img/favicon.png" />
+    <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="alternate" type="application/rss+xml" title="Manuel Gil" href="/rss.xml" />
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme");
+          var theme =
+            stored ||
+            (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+          document.documentElement.dataset.theme = theme;
+        } catch (e) {
+          /* no-op */
+        }
+      })();
+    </script>
+    <noscript>
+      <style>
+        .site-header[data-over-hero]:not([data-scrolled]) {
+          transform: none !important;
+        }
+      </style>
+    </noscript>
+    <Seo {...props} />
+    {
+      ga4Id && (
+        <>
+          <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`} />
+          <script
+            is:inline
+            set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config',"${ga4Id}");`}
+          />
+        </>
+      )
+    }
+    {
+      plausibleDomain && (
+        <script
+          is:inline
+          defer
+          data-domain={plausibleDomain}
+          src="https://plausible.io/js/script.js"
+        />
+      )
+    }
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t("nav.home")}</a>
+    <Header
+      availableLocales={props.availableLocales}
+      languagePath={props.languagePath}
+      overHero={props.overHero}
+    />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

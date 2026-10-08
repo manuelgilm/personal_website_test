@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /play/
+
+Sitemap: https://gilmanuel.com/sitemap-index.xml

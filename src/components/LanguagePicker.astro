@@ -1,0 +1,40 @@
+---
+import { languages, defaultLang, locales, type Lang } from "../i18n/ui";
+import { localizePath, stripLocale, useTranslations } from "../i18n/utils";
+
+interface Props {
+  availableLocales?: Lang[];
+  pathOverride?: string;
+}
+
+const { availableLocales = locales, pathOverride } = Astro.props;
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const path = pathOverride ?? stripLocale(Astro.url.pathname, lang);
+
+const entries = (Object.keys(languages) as Lang[])
+  .filter((loc) => availableLocales.includes(loc))
+  .map((loc) => ({
+    code: loc.toUpperCase(),
+    label: languages[loc],
+    href: localizePath(loc, path),
+    active: loc === lang,
+  }));
+---
+
+<div class="lang" role="group" aria-label={t("lang.switch")}>
+  {
+    entries.map((entry) => (
+      <a
+        href={entry.href}
+        class:list={["lang-link", { active: entry.active }]}
+        hreflang={entry.code.toLowerCase()}
+        lang={entry.code.toLowerCase()}
+        aria-current={entry.active ? "true" : undefined}
+        title={entry.label}
+      >
+        {entry.code}
+      </a>
+    ))
+  }
+</div>

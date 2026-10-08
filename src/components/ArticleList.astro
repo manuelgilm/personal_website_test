@@ -1,0 +1,53 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { defaultLang, type Lang } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
+import { articleHref, getArticles, type ArticleEntry } from "../lib/articles";
+
+interface Props {
+  vertical: "ai" | "rides" | "games";
+  kind: ArticleEntry["data"]["kind"];
+  title: string;
+  description: string;
+}
+
+const { vertical, kind, title, description } = Astro.props;
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const articles = await getArticles(lang, { vertical, kind });
+
+const dateFmt = new Intl.DateTimeFormat(lang === "es" ? "es-CO" : "en-US", {
+  dateStyle: "medium",
+});
+---
+
+<BaseLayout title={`${title} | Manuel Gil`} description={description}>
+  <section class="section">
+    <div class="container">
+      <h1>{title}</h1>
+      <p class="lead">{description}</p>
+
+      {
+        articles.length === 0 ? (
+          <p class="muted">{t("common.soon")}</p>
+        ) : (
+          <ul class="post-list">
+            {articles.map((entry) => (
+              <li class="post-item">
+                <h2 class="post-item-title">
+                  <a href={articleHref(lang, entry)}>{entry.data.title}</a>
+                </h2>
+                <p class="post-item-meta">
+                  <time datetime={entry.data.date.toISOString()}>
+                    {dateFmt.format(entry.data.date)}
+                  </time>
+                </p>
+                <p class="post-item-desc">{entry.data.description}</p>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

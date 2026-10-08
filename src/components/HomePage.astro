@@ -1,0 +1,120 @@
+---
+import { Picture } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SocialIcons from "../components/SocialIcons.astro";
+import heroBg from "../assets/img/home-bg.webp";
+import { defaultLang, type Lang } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
+import { articleHref, getArticles } from "../lib/articles";
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const latest = (await getArticles(lang)).slice(0, 3);
+const dateFmt = new Intl.DateTimeFormat(lang === "es" ? "es-CO" : "en-US", {
+  dateStyle: "medium",
+});
+
+const roles = t("home.hero.roles")
+  .split("|")
+  .map((role) => role.trim())
+  .filter(Boolean);
+---
+
+<BaseLayout title={t("home.title")} description={t("home.description")} overHero>
+  <section class="hero hero-photo">
+    <Picture
+      src={heroBg}
+      formats={["avif"]}
+      fallbackFormat="webp"
+      widths={[640, 1024, 1440, 1920]}
+      sizes="100vw"
+      alt=""
+      class="hero-bg"
+      loading="eager"
+      decoding="async"
+      fetchpriority="high"
+    />
+
+    <div class="container hero-inner">
+      <h1 class="hero-title">
+        <span class="hero-greeting">{t("home.hero.greeting")}</span>{" "}
+        <span class="typed" data-typed data-roles={roles.join("|")}>
+          <span data-typed-text>{roles[0]}</span><span class="typed-cursor" aria-hidden="true">|</span>
+        </span>
+      </h1>
+      <p class="lead hero-lead">{t("home.hero.lead")}</p>
+      <SocialIcons />
+    </div>
+  </section>
+
+  {
+    latest.length > 0 && (
+      <section class="section">
+        <div class="container">
+          <h2>{t("home.latest")}</h2>
+          <ul class="post-list">
+            {latest.map((entry) => (
+              <li class="post-item">
+                <h3 class="post-item-title">
+                  <a href={articleHref(lang, entry)}>{entry.data.title}</a>
+                </h3>
+                <p class="post-item-meta">
+                  <time datetime={entry.data.date.toISOString()}>
+                    {dateFmt.format(entry.data.date)}
+                  </time>
+                </p>
+                <p class="post-item-desc">{entry.data.description}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>
+
+<script>
+  const typed = document.querySelector<HTMLElement>("[data-typed]");
+  if (typed) {
+    const roles = (typed.dataset.roles || "")
+      .split("|")
+      .map((role) => role.trim())
+      .filter(Boolean);
+    const target = typed.querySelector<HTMLElement>("[data-typed-text]") ?? typed;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduce || roles.length < 2) {
+      target.textContent = roles[0] ?? target.textContent;
+    } else {
+      let roleIndex = 0;
+      let charIndex = roles[0].length;
+      let deleting = false;
+
+      const tick = () => {
+        const current = roles[roleIndex];
+        if (!deleting) {
+          charIndex += 1;
+          target.textContent = current.slice(0, charIndex);
+          if (charIndex >= current.length) {
+            deleting = true;
+            window.setTimeout(tick, 1600);
+          } else {
+            window.setTimeout(tick, 70);
+          }
+        } else {
+          charIndex -= 1;
+          target.textContent = current.slice(0, charIndex);
+          if (charIndex <= 0) {
+            deleting = false;
+            roleIndex = (roleIndex + 1) % roles.length;
+            window.setTimeout(tick, 350);
+          } else {
+            window.setTimeout(tick, 40);
+          }
+        }
+      };
+
+      window.setTimeout(tick, 1200);
+    }
+  }
+</script>

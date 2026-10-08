@@ -1,0 +1,25 @@
+---
+import { render } from "astro:content";
+import ArticleLayout from "../layouts/ArticleLayout.astro";
+import { defaultLang, type Lang } from "../i18n/ui";
+import { getArticleByPath, getAvailableLocales, type ArticleEntry } from "../lib/articles";
+
+interface Props {
+  path: string;
+}
+
+const { path } = Astro.props;
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const entry: ArticleEntry | undefined = await getArticleByPath(lang, path);
+
+if (!entry) {
+  throw new Error(`Article not found: ${lang}/${path}`);
+}
+
+const availableLocales = await getAvailableLocales(path);
+const { Content } = await render(entry);
+---
+
+<ArticleLayout entry={entry} availableLocales={availableLocales}>
+  <Content />
+</ArticleLayout>

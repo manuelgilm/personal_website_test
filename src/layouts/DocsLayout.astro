@@ -1,0 +1,66 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Search from "../components/Search.astro";
+import { defaultLang, type Lang } from "../i18n/ui";
+import { localizePath, useTranslations } from "../i18n/utils";
+import { tutorialHref, type SidebarGroup } from "../lib/tutorials";
+
+interface Props {
+  title: string;
+  description: string;
+  currentPath: string;
+  groups: SidebarGroup[];
+  availableLocales?: Lang[];
+  jsonLd?: Record<string, unknown>[];
+}
+
+const { title, description, currentPath, groups, availableLocales, jsonLd } =
+  Astro.props;
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  availableLocales={availableLocales}
+  jsonLd={jsonLd}
+>
+  <div class="container docs">
+    <aside class="docs-sidebar">
+      <Search />
+      <nav aria-label={t("nav.ai.tutorials")}>
+        {
+          groups.map((group) => (
+            <div class="docs-group">
+              <p class="docs-group-title">{group.name}</p>
+              <ul>
+                {group.items.map((item) => (
+                  <li class:list={[{ active: item.path === currentPath }]}>
+                    <a
+                      href={tutorialHref(lang, item.path)}
+                      aria-current={item.path === currentPath ? "page" : undefined}
+                    >
+                      {item.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </nav>
+    </aside>
+
+    <article class="docs-content">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href={localizePath(lang, "")}>{t("nav.home")}</a>
+        <span aria-hidden="true">/</span>
+        <a href={localizePath(lang, "ai")}>{t("nav.ai")}</a>
+        <span aria-hidden="true">/</span>
+        <a href={localizePath(lang, "ai/tutorials")}>{t("nav.ai.tutorials")}</a>
+      </nav>
+      <slot />
+    </article>
+  </div>
+</BaseLayout>

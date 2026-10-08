@@ -1,0 +1,124 @@
+---
+import { defaultLang, type Lang } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+---
+
+<form id="contact-form" class="contact-form" method="post" action="/api/contact" novalidate>
+  <div class="form-field">
+    <label for="cf-name">{t("contact.form.name")}</label>
+    <input
+      type="text"
+      id="cf-name"
+      name="name"
+      autocomplete="name"
+      maxlength="120"
+      required
+    />
+  </div>
+
+  <div class="form-field">
+    <label for="cf-email">{t("contact.form.email")}</label>
+    <input type="email" id="cf-email" name="email" autocomplete="email" maxlength="254" required />
+  </div>
+
+  <div class="form-field">
+    <label for="cf-subject">{t("contact.form.subject")}</label>
+    <input type="text" id="cf-subject" name="subject" maxlength="200" required />
+  </div>
+
+  <div class="form-field">
+    <label for="cf-message">{t("contact.form.message")}</label>
+    <textarea id="cf-message" name="message" rows="6" maxlength="5000" required></textarea>
+  </div>
+
+  <div class="hp" aria-hidden="true">
+    <label for="cf-website">Website</label>
+    <input type="text" id="cf-website" name="website" tabindex="-1" autocomplete="off" />
+  </div>
+  <input type="hidden" name="lang" value={lang} />
+
+  <p class="form-status" role="status" aria-live="polite" hidden></p>
+
+  <button type="submit" class="btn primary">{t("contact.form.submit")}</button>
+</form>
+
+<script
+  define:vars={{
+    requiredMsg: t("contact.form.error.required"),
+    emailMsg: t("contact.form.error.email"),
+    genericMsg: t("contact.form.error.generic"),
+    networkMsg: t("contact.form.error.network"),
+    successMsg: t("contact.form.success"),
+    sendingMsg: t("contact.form.sending"),
+  }}
+>
+  (function () {
+    const form = document.getElementById("contact-form");
+    if (!form) return;
+
+    const status = form.querySelector(".form-status");
+    const submit = form.querySelector('button[type="submit"]');
+    const field = (name) => form.elements.namedItem(name);
+
+    function setStatus(message, type) {
+      status.textContent = message || "";
+      status.hidden = !message;
+      status.dataset.type = type || "";
+    }
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      setStatus("");
+
+      const name = field("name").value.trim();
+      const email = field("email").value.trim();
+      const subject = field("subject").value.trim();
+      const message = field("message").value.trim();
+
+      if (!name || !email || !subject || !message) {
+        setStatus(requiredMsg, "error");
+        return;
+      }
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+        setStatus(emailMsg, "error");
+        return;
+      }
+
+      const original = submit.textContent;
+      submit.disabled = true;
+      submit.textContent = sendingMsg;
+
+      fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          subject: subject,
+          message: message,
+          website: field("website") ? field("website").value : "",
+          lang: field("lang") ? field("lang").value : "en",
+        }),
+      })
+        .then((response) => response.json().then((data) => ({ ok: response.ok, data: data })))
+        .then((result) => {
+          if (result.ok && result.data.success) {
+            form.reset();
+            setStatus(successMsg, "success");
+          } else {
+            setStatus(result.data.message || genericMsg, "error");
+          }
+        })
+        .catch(function () {
+          setStatus(networkMsg, "error");
+        })
+        .finally(function () {
+          submit.disabled = false;
+          submit.textContent = original;
+        });
+    });
+  })();
+</script>

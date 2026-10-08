@@ -1,3 +1,14 @@
 node_modules/
 /test-results/
 
+# Astro
+dist/
+.astro/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Editors
+.vscode/

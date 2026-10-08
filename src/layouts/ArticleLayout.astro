@@ -1,0 +1,127 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import VideoEmbed from "../components/VideoEmbed.astro";
+import { SITE } from "../consts";
+import { defaultLang, type Lang, type UIKey } from "../i18n/ui";
+import { localizePath, useTranslations } from "../i18n/utils";
+import { type ArticleEntry } from "../lib/articles";
+
+interface Props {
+  entry: ArticleEntry;
+  availableLocales?: Lang[];
+}
+
+const { entry, availableLocales } = Astro.props;
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const { title, description, date, youtubeId, vertical, kind } = entry.data;
+
+const site = Astro.site ?? new URL(SITE.url);
+const canonical = new URL(Astro.url.pathname, site).href;
+const published = date.toISOString();
+const displayDate = new Intl.DateTimeFormat(lang === "es" ? "es-CO" : "en-US", {
+  dateStyle: "long",
+}).format(date);
+
+const jsonLd: Record<string, unknown>[] = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: title,
+    description,
+    datePublished: published,
+    dateModified: published,
+    inLanguage: lang,
+    author: { "@type": "Person", name: SITE.name, url: SITE.url },
+    mainEntityOfPage: canonical,
+    image: new URL(entry.data.cover ?? SITE.ogImage, site).href,
+  },
+];
+
+if (youtubeId) {
+  jsonLd.push({
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    name: title,
+    description,
+    uploadDate: published,
+    thumbnailUrl: `https://i.ytimg.com/vi/${youtubeId}/maxresdefault.jpg`,
+    embedUrl: `https://www.youtube-nocookie.com/embed/${youtubeId}`,
+    contentUrl: `https://www.youtube.com/watch?v=${youtubeId}`,
+  });
+}
+
+const sectionKey: UIKey =
+  vertical === "ai" ? "nav.ai" : vertical === "games" ? "nav.games" : "nav.rides";
+const kindKey: UIKey =
+  vertical === "ai"
+    ? "ai.articles"
+    : vertical === "games"
+      ? "games.devlogs"
+      : kind === "story"
+        ? "rides.stories"
+        : "rides.routes";
+const sectionPath = vertical === "ai" ? "ai" : vertical === "games" ? "games" : "rides";
+const kindSegment =
+  vertical === "ai" ? "articles" : vertical === "games" ? "devlogs" : kind === "story" ? "stories" : "routes";
+const listHref = localizePath(
+  lang,
+  vertical === "games" ? "games/devlogs" : `${sectionPath}/${kindSegment}`,
+);
+const sectionHref = localizePath(lang, sectionPath);
+
+jsonLd.push({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: t("nav.home"), item: new URL(localizePath(lang, ""), site).href },
+    { "@type": "ListItem", position: 2, name: t(sectionKey), item: new URL(sectionHref, site).href },
+    { "@type": "ListItem", position: 3, name: t(kindKey), item: new URL(listHref, site).href },
+    { "@type": "ListItem", position: 4, name: title, item: canonical },
+  ],
+});
+---
+
+<BaseLayout
+  title={`${title} | Manuel Gil`}
+  description={description}
+  type="article"
+  image={entry.data.cover}
+  imageAlt={title}
+  publishedTime={published}
+  availableLocales={availableLocales}
+  jsonLd={jsonLd}
+>
+  <article class="container article">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href={localizePath(lang, "")}>{t("nav.home")}</a>
+      <span aria-hidden="true">/</span>
+      <a href={sectionHref}>{t(sectionKey)}</a>
+      <span aria-hidden="true">/</span>
+      <a href={listHref}>{t(kindKey)}</a>
+    </nav>
+
+    <header class="article-header">
+      <h1>{title}</h1>
+      <p class="article-meta">
+        <time datetime={published}>{displayDate}</time>
+        <span aria-hidden="true">·</span>
+        <span>{t(sectionKey)}</span>
+      </p>
+    </header>
+
+    {entry.data.cover && (
+      <img class="article-cover" src={entry.data.cover} alt="" loading="lazy" decoding="async" />
+    )}
+
+    {youtubeId && <VideoEmbed id={youtubeId} title={title} />}
+
+    <div class="article-body">
+      <slot />
+    </div>
+
+    <p class="article-back">
+      <a href={listHref}>← {t(kindKey)}</a>
+    </p>
+  </article>
+</BaseLayout>

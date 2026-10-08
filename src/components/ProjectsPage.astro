@@ -1,0 +1,34 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { defaultLang, type Lang } from "../i18n/ui";
+import { localizePath, useTranslations } from "../i18n/utils";
+import { projects } from "../data/projects";
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={`${t("ai.projects")} | Manuel Gil`}
+  description={t("ai.projects.description")}
+>
+  <section class="section">
+    <div class="container">
+      <h1>{t("ai.projects")}</h1>
+      <p class="lead">{t("ai.projects.description")}</p>
+
+      <div class="grid">
+        {
+          projects.map((project) => (
+            <article class="card">
+              <h3>
+                <a href={localizePath(lang, project.href)}>{project.title[lang]}</a>
+              </h3>
+              <p>{project.description[lang]}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

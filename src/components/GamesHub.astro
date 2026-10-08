@@ -1,0 +1,74 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { defaultLang, type Lang } from "../i18n/ui";
+import { localizePath, useTranslations } from "../i18n/utils";
+import { articleHref, getArticles } from "../lib/articles";
+import { games } from "../data/games";
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+const devlogs = (await getArticles(lang, { vertical: "games", kind: "devlog" })).slice(0, 5);
+const dateFmt = new Intl.DateTimeFormat(lang === "es" ? "es-CO" : "en-US", {
+  dateStyle: "medium",
+});
+---
+
+<BaseLayout title={t("games.title")} description={t("games.description")}>
+  <section class="hero">
+    <div class="container">
+      <h1>{t("nav.games")}</h1>
+      <p class="lead">{t("games.lead")}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>{t("games.games")}</h2>
+      <div class="grid">
+        {
+          games.map((game) => (
+            <article class="card">
+              <h3>{game.title[lang]}</h3>
+              <p>{game.description[lang]}</p>
+              <a
+                class="btn primary"
+                href={`/${game.playPath}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t("games.play")}
+              </a>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {
+    devlogs.length > 0 && (
+      <section class="section">
+        <div class="container">
+          <h2>
+            <a href={localizePath(lang, "games/devlogs")}>{t("games.devlogs")}</a>
+          </h2>
+          <ul class="post-list">
+            {devlogs.map((entry) => (
+              <li class="post-item">
+                <h3 class="post-item-title">
+                  <a href={articleHref(lang, entry)}>{entry.data.title}</a>
+                </h3>
+                <p class="post-item-meta">
+                  <time datetime={entry.data.date.toISOString()}>
+                    {dateFmt.format(entry.data.date)}
+                  </time>
+                </p>
+                <p class="post-item-desc">{entry.data.description}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>
