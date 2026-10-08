@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     env:
-      NODE_VERSION: "20"
+      NODE_VERSION: "22"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -40,6 +40,7 @@ jobs:
 
       - name: Submit URLs to IndexNow
         if: github.event_name == 'push'
+        continue-on-error: true
         run: node scripts/indexnow.mjs
         env:
           SITEMAP_URL: https://gilmanuel.com/sitemap-0.xml
