@@ -7,7 +7,7 @@ Personal site of Manuel Gil — AI Platform Developer and MLOps Engineer, and mo
 - **Astro** — static output to `dist/`
 - **Content collections** — articles and tutorials in Markdown, bilingual by folder
 - **Pagefind** — site search (indexed after `astro build`)
-- **Azure Functions** (`api/`) — contact form and MLflow access provisioning
+- **Azure Functions** (`api/`) — contact form, MLflow access provisioning, and AI chat via the MLflow gateway
 - **Self-hosted fonts** — Inter + Newsreader
 
 ## Quick start
@@ -32,7 +32,7 @@ src/
   consts.ts        site name, email, location, social links
   content.config.ts  content schemas
   styles/global.css  design tokens + component styles
-api/               Azure Functions (contact, mlflow_server)
+api/               Azure Functions (contact, mlflow_server, openai)
 public/            static assets, robots.txt, staticwebapp.config.json, games
 scripts/           indexnow.mjs
 .github/workflows/ build & deploy
