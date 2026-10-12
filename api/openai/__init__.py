@@ -1,27 +1,26 @@
 import azure.functions as func
 import os
 import json
-import time
 import requests
+from requests.auth import HTTPBasicAuth
 
 # ============================================
 # CONFIGURATION - Set these in Azure Function App Settings
 # ============================================
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1").rstrip("/")
-OPENAI_TIMEOUT = int(os.getenv("OPENAI_TIMEOUT", "30"))
+# Unified OpenAI-compatible MLflow gateway endpoint.
+# e.g. https://sandbox-mlflow.gilmanuel.com/gateway/mlflow/v1
+MLFLOW_GATEWAY_URL = os.getenv("MLFLOW_GATEWAY_URL", "").rstrip("/")
+MLFLOW_GATEWAY_USER = os.getenv("MLFLOW_GATEWAY_USER")
+MLFLOW_GATEWAY_PASSWORD = os.getenv("MLFLOW_GATEWAY_PASSWORD")
+MLFLOW_GATEWAY_DEFAULT_MODEL = os.getenv("MLFLOW_GATEWAY_DEFAULT_MODEL", "gpt-4o-mini")
+MLFLOW_GATEWAY_TIMEOUT = int(os.getenv("MLFLOW_GATEWAY_TIMEOUT", "30"))
 
-# Optional comma-separated allowlist of models clients may request.
-# When empty, any model name is accepted (the default is always allowed).
-OPENAI_ALLOWED_MODELS = [
-    m.strip() for m in os.getenv("OPENAI_ALLOWED_MODELS", "").split(",") if m.strip()
+# Optional comma-separated allowlist of gateway endpoint names clients may
+# request. When empty, any endpoint name is accepted (the default is always
+# allowed).
+MLFLOW_GATEWAY_ALLOWED_MODELS = [
+    m.strip() for m in os.getenv("MLFLOW_GATEWAY_ALLOWED_MODELS", "").split(",") if m.strip()
 ]
-
-# Simple in-memory rate limiter (best-effort, per instance).
-# Key: client IP -> timestamp of last accepted request.
-_LAST_REQUEST = {}
-_RATE_LIMIT_SECONDS = int(os.getenv("OPENAI_RATE_LIMIT_SECONDS", "30"))
 
 VALID_ROLES = {"system", "user", "assistant"}
 MAX_MESSAGES = 50
@@ -47,29 +46,12 @@ def _success_response(reply: str, model: str) -> func.HttpResponse:
 
 
 def _validate_config() -> func.HttpResponse | None:
-    if not OPENAI_API_KEY:
+    if not MLFLOW_GATEWAY_URL or not MLFLOW_GATEWAY_USER or not MLFLOW_GATEWAY_PASSWORD:
         return _error_response(
             "Server configuration incomplete. Contact administrator.",
             status=500
         )
     return None
-
-
-def _client_ip(req: func.HttpRequest) -> str:
-    """Best-effort client IP from SWA/Functions forwarded headers."""
-    forwarded = req.headers.get("x-forwarded-for")
-    if forwarded:
-        return forwarded.split(",")[0].strip()
-    return req.headers.get("x-client-ip") or "unknown"
-
-
-def _rate_limited(ip: str) -> bool:
-    now = time.time()
-    last = _LAST_REQUEST.get(ip, 0)
-    if now - last < _RATE_LIMIT_SECONDS:
-        return True
-    _LAST_REQUEST[ip] = now
-    return False
 
 
 def _validate_messages(messages: object) -> tuple[bool, str, list[dict]]:
@@ -99,31 +81,29 @@ def _validate_messages(messages: object) -> tuple[bool, str, list[dict]]:
 
 
 def _resolve_model(requested: object) -> tuple[bool, str, str]:
-    """Pick the model to use, enforcing the optional allowlist."""
+    """Pick the gateway endpoint name to use, enforcing the optional allowlist."""
     if requested is None:
-        return True, "", OPENAI_MODEL
+        return True, "", MLFLOW_GATEWAY_DEFAULT_MODEL
     if not isinstance(requested, str) or not requested.strip():
         return False, "Field 'model' must be a non-empty string", ""
     model = requested.strip()
-    if model == OPENAI_MODEL or model in OPENAI_ALLOWED_MODELS:
+    if model == MLFLOW_GATEWAY_DEFAULT_MODEL or model in MLFLOW_GATEWAY_ALLOWED_MODELS:
         return True, "", model
     return False, "Requested model is not allowed", ""
 
 
-def _call_openai(payload: dict) -> tuple[bool, str, str, int]:
-    """Call the OpenAI chat completions API.
+def _call_gateway(payload: dict) -> tuple[bool, str, str, int]:
+    """Call the MLflow gateway OpenAI-compatible chat completions endpoint.
 
     Returns (success, reply_or_message, model, status_code).
     """
     try:
         response = requests.post(
-            f"{OPENAI_BASE_URL}/chat/completions",
-            headers={
-                "Authorization": f"Bearer {OPENAI_API_KEY}",
-                "Content-Type": "application/json",
-            },
+            f"{MLFLOW_GATEWAY_URL}/chat/completions",
+            auth=HTTPBasicAuth(MLFLOW_GATEWAY_USER, MLFLOW_GATEWAY_PASSWORD),
+            headers={"Content-Type": "application/json"},
             json=payload,
-            timeout=OPENAI_TIMEOUT,
+            timeout=MLFLOW_GATEWAY_TIMEOUT,
         )
     except requests.Timeout:
         return False, "The AI service timed out. Please try again.", "", 504
@@ -132,6 +112,8 @@ def _call_openai(payload: dict) -> tuple[bool, str, str, int]:
 
     if response.status_code == 429:
         return False, "The AI service is rate limited. Please try again shortly.", "", 429
+    if response.status_code in (401, 403):
+        return False, "The AI service rejected the request.", "", 502
     if response.status_code >= 400:
         return False, "The AI service returned an error.", "", 502
 
@@ -144,7 +126,7 @@ def _call_openai(payload: dict) -> tuple[bool, str, str, int]:
     if not isinstance(reply, str) or not reply.strip():
         return False, "The AI service returned an empty response.", "", 502
 
-    model = data.get("model") or payload.get("model", OPENAI_MODEL)
+    model = data.get("model") or payload.get("model", MLFLOW_GATEWAY_DEFAULT_MODEL)
     return True, reply, model, 200
 
 
@@ -152,9 +134,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     config_error = _validate_config()
     if config_error:
         return config_error
-
-    if _rate_limited(_client_ip(req)):
-        return _error_response("Too many requests. Please wait a moment.", status=429)
 
     try:
         req_body = req.get_json()
@@ -190,7 +169,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             return _error_response(f"Field 'max_tokens' must be between 1 and {MAX_TOKENS_LIMIT}")
         payload["max_tokens"] = max_tokens
 
-    ok, reply, response_model, status = _call_openai(payload)
+    ok, reply, response_model, status = _call_gateway(payload)
     if not ok:
         return _error_response(reply, status=status)
 
