@@ -652,6 +652,17 @@ p.lead {
   font-size: 0.85rem;
 }
 
+.footer-legal {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0;
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+}
+
 /* Docs layout */
 .docs {
   display: grid;

@@ -16,7 +16,7 @@ const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 
     <h2>El widget de ideas con IA</h2>
     <p>
-      Los widgets interactivos del
+      Los widgets interactivos del{" "}
       <a href={localizePath(lang, "ai/articles/idea-breaker")}>artículo sobre poner a prueba
       ideas</a> envían el texto que escribes a un <strong>modelo de IA (OpenAI)</strong>. La petición
       pasa por mi propio <strong>servidor de MLflow</strong>, que actúa como gateway, y la
