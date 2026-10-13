@@ -17,38 +17,65 @@ interface Props {
   personas?: string[];
   /** Use every persona (reviewers capped at MAX_PERSONAS). */
   all?: boolean;
+  /** Send the idea with no system prompt, for a plain baseline answer. */
+  plain?: boolean;
+  /** Share the typed idea across every widget on the page (default true). */
+  sync?: boolean;
   /** Optional heading shown above the form. */
   label?: string;
   /** Optional gateway endpoint name to override the server default model. */
   model?: string;
 }
 
-const { persona, personas: personaIds, all = false, label, model } = Astro.props;
+interface SelectedPersona {
+  id: string;
+  role: string;
+  name: string;
+  system: string;
+}
+
+const { persona, personas: personaIds, all = false, plain = false, sync = true, label, model } =
+  Astro.props;
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
 
-let selected: Persona[] = [];
-if (all) {
-  selected = resolvePersonas(allPersonas.map((item) => item.id));
-} else if (personaIds && personaIds.length) {
-  selected = resolvePersonas(personaIds);
-} else if (persona) {
-  selected = resolvePersonas([persona]);
-}
-if (!selected.length) selected = [allPersonas[0]];
+let selected: SelectedPersona[] = [];
 
-const hasReviewer = selected.some((item) => item.role === "reviewer");
+if (plain) {
+  selected = [{ id: "plain", role: "plain", name: t("idea.plain"), system: "" }];
+} else {
+  let chosen: Persona[] = [];
+  if (all) {
+    chosen = resolvePersonas(allPersonas.map((item) => item.id));
+  } else if (personaIds && personaIds.length) {
+    chosen = resolvePersonas(personaIds);
+  } else if (persona) {
+    chosen = resolvePersonas([persona]);
+  }
+  if (!chosen.length) chosen = [allPersonas[0]];
+
+  const hasReviewer = chosen.some((item) => item.role === "reviewer");
+  const hasSynthesizer = chosen.some((item) => item.role === "synthesizer");
+
+  // A synthesizer with no reviewers has nothing to synthesize: add the reviewers.
+  if (hasSynthesizer && !hasReviewer) {
+    chosen = [...getReviewers(), ...chosen.filter((item) => item.role === "synthesizer")];
+  }
+
+  selected = chosen.map((item) => ({
+    id: item.id,
+    role: item.role,
+    name: personaName(item, lang),
+    system: personaSystem(item, lang),
+  }));
+}
+
 const hasSynthesizer = selected.some((item) => item.role === "synthesizer");
-
-// A synthesizer with no reviewers has nothing to synthesize: add the reviewers.
-if (hasSynthesizer && !hasReviewer) {
-  selected = [...getReviewers(), ...selected.filter((item) => item.role === "synthesizer")];
-}
-
 const isMulti = selected.length > 1 || hasSynthesizer;
 
 const config = {
   model: model || "",
+  sync,
   strings: {
     submit: t("idea.submit"),
     submitAll: t("idea.submitAll"),
@@ -57,12 +84,7 @@ const config = {
     error: t("idea.error"),
     networkError: t("idea.networkError"),
   },
-  personas: selected.map((item) => ({
-    id: item.id,
-    role: item.role,
-    name: personaName(item, lang),
-    system: personaSystem(item, lang),
-  })),
+  personas: selected,
 };
 ---
 
@@ -116,6 +138,25 @@ const config = {
     const widgets = document.querySelectorAll<HTMLElement>("[data-idea-feedback]");
     if (!widgets.length) return;
 
+    const STORAGE_KEY = "idea-feedback:idea";
+    const SYNC_EVENT = "idea-feedback:sync";
+
+    function readIdea(): string {
+      try {
+        return window.sessionStorage.getItem(STORAGE_KEY) || "";
+      } catch (error) {
+        return "";
+      }
+    }
+
+    function writeIdea(value: string) {
+      try {
+        window.sessionStorage.setItem(STORAGE_KEY, value);
+      } catch (error) {
+        /* storage unavailable */
+      }
+    }
+
     widgets.forEach((widget) => {
       if (widget.dataset.ideaReady) return;
       widget.dataset.ideaReady = "1";
@@ -131,6 +172,7 @@ const config = {
       const list = (config.personas || []) as PersonaConfig[];
       if (!list.length) return;
 
+      const sync = config.sync !== false;
       const reviewers = list.filter((persona) => persona.role !== "synthesizer");
       const synthesizers = list.filter((persona) => persona.role === "synthesizer");
 
@@ -142,6 +184,25 @@ const config = {
       if (!form || !input || !submit || !results) return;
 
       const defaultLabel = submit.textContent;
+
+      if (sync) {
+        if (!input.value) {
+          const stored = readIdea();
+          if (stored) input.value = stored;
+        }
+        input.addEventListener("input", () => {
+          writeIdea(input.value);
+          document.dispatchEvent(
+            new CustomEvent(SYNC_EVENT, { detail: { value: input.value, source: input } }),
+          );
+        });
+        document.addEventListener(SYNC_EVENT, (event) => {
+          const detail = (event as CustomEvent).detail as { value: string; source: unknown };
+          if (!detail || detail.source === input) return;
+          if (document.activeElement === input) return;
+          input.value = detail.value;
+        });
+      }
 
       function setStatus(message: string, type: string) {
         if (!status) return;
@@ -187,20 +248,16 @@ const config = {
       }
 
       async function ask(persona: PersonaConfig, idea: string, reviews: string): Promise<GatewayResult> {
+        const messages: { role: string; content: string }[] = [];
+        if (persona.system) messages.push({ role: "system", content: persona.system });
+
         let content = idea;
         if (persona.role === "synthesizer" && reviews) {
           content = `Idea:\n${idea}\n\nReviews from the other perspectives:\n\n${reviews}`;
         }
+        messages.push({ role: "user", content });
 
-        const payload: {
-          model?: string;
-          messages: { role: string; content: string }[];
-        } = {
-          messages: [
-            { role: "system", content: persona.system },
-            { role: "user", content },
-          ],
-        };
+        const payload: { model?: string; messages: { role: string; content: string }[] } = { messages };
         if (config.model) payload.model = config.model;
 
         try {
@@ -227,6 +284,7 @@ const config = {
           setStatus(strings.required, "error");
           return;
         }
+        if (sync) writeIdea(input.value);
 
         submit.disabled = true;
         submit.textContent = strings.loading;

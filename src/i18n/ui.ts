@@ -65,6 +65,7 @@ export const ui = {
     "idea.networkError": "Could not reach the server. Please try again later.",
     "idea.confidence": "Each reply ends with the confidence the model reports.",
     "idea.noscript": "Enable JavaScript to try this interactive demo.",
+    "idea.plain": "A plain answer",
 
     "rides.title": "Road Trips | Manuel Gil",
     "rides.description": "Motorcycle road trips: route guides and travel stories from the road.",
@@ -193,6 +194,7 @@ export const ui = {
     "idea.networkError": "No se pudo conectar con el servidor. Inténtalo más tarde.",
     "idea.confidence": "Cada respuesta termina con la confianza que reporta el modelo.",
     "idea.noscript": "Activa JavaScript para probar esta demostración interactiva.",
+    "idea.plain": "Una respuesta simple",
 
     "rides.title": "Viajes | Manuel Gil",
     "rides.description": "Viajes en moto: guías de ruta e historias desde la carretera.",
