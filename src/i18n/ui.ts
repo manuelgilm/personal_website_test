@@ -56,6 +56,16 @@ export const ui = {
     "ai.watch": "Watch",
     "ai.watch.description": "Playlists and walkthroughs on my YouTube channel.",
 
+    "idea.placeholder": "Write your idea in a sentence or two…",
+    "idea.submit": "Get feedback",
+    "idea.submitAll": "Get all perspectives",
+    "idea.loading": "Asking the model…",
+    "idea.required": "Please write your idea first.",
+    "idea.error": "The model could not respond. Please try again.",
+    "idea.networkError": "Could not reach the server. Please try again later.",
+    "idea.confidence": "Each reply ends with the confidence the model reports.",
+    "idea.noscript": "Enable JavaScript to try this interactive demo.",
+
     "rides.title": "Road Trips | Manuel Gil",
     "rides.description": "Motorcycle road trips: route guides and travel stories from the road.",
     "rides.lead": "Motorcycle road trips — routes, guides and stories from the road.",
@@ -173,6 +183,16 @@ export const ui = {
       "Herramientas y productos que construyo y mantengo, incluido el servidor abierto de tracking de experimentos con MLflow.",
     "ai.watch": "Mira",
     "ai.watch.description": "Listas y recorridos en mi canal de YouTube.",
+
+    "idea.placeholder": "Escribe tu idea en una o dos frases…",
+    "idea.submit": "Pedir opinión",
+    "idea.submitAll": "Ver todas las perspectivas",
+    "idea.loading": "Consultando al modelo…",
+    "idea.required": "Escribe primero tu idea.",
+    "idea.error": "El modelo no pudo responder. Inténtalo de nuevo.",
+    "idea.networkError": "No se pudo conectar con el servidor. Inténtalo más tarde.",
+    "idea.confidence": "Cada respuesta termina con la confianza que reporta el modelo.",
+    "idea.noscript": "Activa JavaScript para probar esta demostración interactiva.",
 
     "rides.title": "Viajes | Manuel Gil",
     "rides.description": "Viajes en moto: guías de ruta e historias desde la carretera.",

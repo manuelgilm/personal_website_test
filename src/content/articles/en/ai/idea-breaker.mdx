@@ -1,0 +1,52 @@
+---
+title: "Analyze an idea from multiple perspectives using AI."
+description: "How to use AI models as reviewers — and how their reported confidence can help you weigh their feedback."
+date: 2026-10-07
+lang: "en"
+vertical: "ai"
+kind: "article"
+# youtubeId: "dQw4w9WgXcQ"     # optional: embeds the video + VideoObject schema
+# cover: "/assets/img/cover.jpg" # optional: header image (put file in public/assets/img/)
+---
+
+import IdeaFeedback from "../../../../components/IdeaFeedback.astro";
+
+{/* TODO (author): write the intro. Keep a short paragraph before the first widget. */}
+
+A model can review the same idea from very different angles. In this article we look at what each angle adds, and at how much confidence the model reports in its own answer.
+
+## Positive feedback
+
+{/* TODO (author): explain what encouraging, strengths-first feedback is good for. */}
+
+A first pass that looks for the strengths:
+
+<IdeaFeedback persona="optimist" label="Try it: strengths-first review" />
+
+## Critical feedback
+
+{/* TODO (author): explain what a skeptical read surfaces, and when it is worth asking for. */}
+
+A second pass that looks for the risks:
+
+<IdeaFeedback persona="skeptic" label="Try it: critical review" />
+
+## How to fix it
+
+{/* TODO (author): explain how a pragmatic perspective turns criticism into a plan. */}
+
+Ask for concrete next steps:
+
+<IdeaFeedback persona="pragmatist" label="Try it: how to fix it" />
+
+## Overall
+
+{/* TODO (author): explain that the synthesizer weighs all three perspectives and gives an overall score. */}
+
+Get an overall view, scored from 1 to 10:
+
+<IdeaFeedback persona="synthesizer" label="Try it: overall view" />
+
+## Reading the confidence
+
+{/* TODO (author): write the closing. Explain that each reply ends with the confidence the model reports, and that a confident answer is not necessarily a correct one. */}
