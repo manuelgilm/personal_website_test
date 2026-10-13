@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { defaultLang, type Lang } from "../i18n/ui";
 import { useTranslations } from "../i18n/utils";
 import { articleHref, getArticles, type ArticleEntry } from "../lib/articles";
+import { formatDate } from "../lib/dates";
 
 interface Props {
   vertical: "ai" | "rides" | "games";
@@ -15,10 +16,6 @@ const { vertical, kind, title, description } = Astro.props;
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
 const articles = await getArticles(lang, { vertical, kind });
-
-const dateFmt = new Intl.DateTimeFormat(lang === "es" ? "es-CO" : "en-US", {
-  dateStyle: "medium",
-});
 ---
 
 <BaseLayout title={`${title} | Manuel Gil`} description={description}>
@@ -39,7 +36,7 @@ const dateFmt = new Intl.DateTimeFormat(lang === "es" ? "es-CO" : "en-US", {
                 </h2>
                 <p class="post-item-meta">
                   <time datetime={entry.data.date.toISOString()}>
-                    {dateFmt.format(entry.data.date)}
+                    {formatDate(lang, entry.data.date)}
                   </time>
                 </p>
                 <p class="post-item-desc">{entry.data.description}</p>

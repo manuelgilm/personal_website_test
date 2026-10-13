@@ -1,7 +1,7 @@
 ---
 import { SITE } from "../consts";
 import { defaultLang, type Lang } from "../i18n/ui";
-import { useTranslations } from "../i18n/utils";
+import { localizePath, useTranslations } from "../i18n/utils";
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
@@ -29,7 +29,11 @@ const socials = [
         ))
       }
     </ul>
-    <p>&copy; {year} {SITE.name}. {t("footer.rights")}</p>
+    <p>
+      &copy; {year} {SITE.name}. {t("footer.rights")}
+      <span aria-hidden="true">·</span>
+      <a href={localizePath(lang, "privacy")}>{t("footer.privacy")}</a>
+    </p>
     <p class="credits">{t("footer.credits")}</p>
   </div>
 </footer>

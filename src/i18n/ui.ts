@@ -66,6 +66,8 @@ export const ui = {
     "idea.confidence": "Each reply ends with the confidence the model reports.",
     "idea.noscript": "Enable JavaScript to try this interactive demo.",
     "idea.plain": "A plain answer",
+    "idea.notice":
+      "Your input is sent to OpenAI through my MLflow server, where the interaction is recorded for evaluation. Please don't include sensitive or personal data.",
 
     "rides.title": "Road Trips | Manuel Gil",
     "rides.description": "Motorcycle road trips: route guides and travel stories from the road.",
@@ -93,6 +95,11 @@ export const ui = {
     "about.description":
       "About Manuel Gil, an AI Platform Developer and MLOps Engineer based in Zipaquirá, Colombia.",
     "about.lead": "About",
+
+    "privacy.title": "Privacy | Manuel Gil",
+    "privacy.description":
+      "How this site handles your data: the AI idea widget, the contact form, and analytics.",
+    "privacy.lead": "Privacy",
 
     "contact.title": "Contact | Manuel Gil",
     "contact.description":
@@ -136,6 +143,7 @@ export const ui = {
     "notfound.cta": "Back home",
 
     "footer.rights": "All rights reserved.",
+    "footer.privacy": "Privacy",
     "footer.credits": "Built with Astro.",
     "common.soon": "Content coming soon.",
   },
@@ -195,6 +203,8 @@ export const ui = {
     "idea.confidence": "Cada respuesta termina con la confianza que reporta el modelo.",
     "idea.noscript": "Activa JavaScript para probar esta demostración interactiva.",
     "idea.plain": "Una respuesta simple",
+    "idea.notice":
+      "Tu texto se envía a OpenAI a través de mi servidor de MLflow, donde la interacción se registra para su evaluación. No incluyas datos sensibles ni personales.",
 
     "rides.title": "Viajes | Manuel Gil",
     "rides.description": "Viajes en moto: guías de ruta e historias desde la carretera.",
@@ -222,6 +232,11 @@ export const ui = {
     "about.description":
       "Acerca de Manuel Gil, Desarrollador de Plataformas de IA e Ingeniero MLOps en Zipaquirá, Colombia.",
     "about.lead": "Acerca de",
+
+    "privacy.title": "Privacidad | Manuel Gil",
+    "privacy.description":
+      "Cómo trata este sitio tus datos: el widget de ideas con IA, el formulario de contacto y las analíticas.",
+    "privacy.lead": "Privacidad",
 
     "contact.title": "Contacto | Manuel Gil",
     "contact.description":
@@ -265,6 +280,7 @@ export const ui = {
     "notfound.cta": "Volver al inicio",
 
     "footer.rights": "Todos los derechos reservados.",
+    "footer.privacy": "Privacidad",
     "footer.credits": "Hecho con Astro.",
     "common.soon": "Contenido próximamente.",
   },

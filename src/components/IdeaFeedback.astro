@@ -1,6 +1,6 @@
 ---
 import { defaultLang, type Lang } from "../i18n/ui";
-import { useTranslations } from "../i18n/utils";
+import { localizePath, useTranslations } from "../i18n/utils";
 import {
   personas as allPersonas,
   resolvePersonas,
@@ -104,6 +104,10 @@ const config = {
       </button>
       <span class="idea-hint">{t("idea.confidence")}</span>
     </div>
+    <p class="idea-notice">
+      {t("idea.notice")}{" "}
+      <a href={localizePath(lang, "privacy")}>{t("footer.privacy")}</a>
+    </p>
   </form>
 
   <p class="form-status" role="status" aria-live="polite" hidden data-status></p>
@@ -388,6 +392,18 @@ const config = {
   .idea-hint {
     font-size: 0.82rem;
     color: var(--muted);
+  }
+
+  .idea-notice {
+    margin: 0;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+
+  .idea-notice a {
+    color: inherit;
+    text-decoration: underline;
   }
 
   .idea-feedback .btn {
