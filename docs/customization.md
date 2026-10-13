@@ -95,6 +95,7 @@ Fonts are self-hosted via `@fontsource-variable/*`, imported at the top of **`sr
 - **UI strings**: the `idea.*` keys in **`src/i18n/ui.ts`** (edit `en` and `es`).
 - **Example**: `src/content/articles/{en,es}/ai/idea-breaker.mdx`.
 - **Backend**: the gateway function needs the `MLFLOW_GATEWAY_*` variables — see [configuration](./configuration.md).
+- **Data notice**: the widget shows `idea.notice` under the form and links to the privacy page. Edit the wording there and in `src/pages/{privacy,es/privacy}.astro`.
 
 ## Contact form
 
@@ -104,4 +105,4 @@ Fonts are self-hosted via `@fontsource-variable/*`, imported at the top of **`sr
 
 ## Pages and 404
 
-Route files live in `src/pages/` (English) and `src/pages/es/` (Spanish): `index`, `about`, `contact/index`, `contact/thanks`, `ai/**`, `rides/**`, `404`. The 404 page is **`src/pages/404.astro`**.
+Route files live in `src/pages/` (English) and `src/pages/es/` (Spanish): `index`, `about`, `contact/index`, `contact/thanks`, `ai/**`, `rides/**`, `privacy`, `404`. The 404 page is **`src/pages/404.astro`**. The privacy page (`src/pages/privacy.astro` + `src/pages/es/privacy.astro`) uses `SimplePage` and is linked from the footer; page text keys are `privacy.*` in `ui.ts`.

@@ -38,6 +38,7 @@ Azure SWA **rejects duplicate routes** in `public/staticwebapp.config.json` and 
 - `@astrojs/sitemap` excludes `/contact/thanks/` and `/es/contact/gracias/` via a `filter`. If you add other `noindex` pages, add them there so they don't leak into `sitemap-0.xml`.
 - The CV "Download PDF" button only renders when `public/cv/manuel-gil-cv-{en,es}.pdf` exists (build-time `fs.existsSync`).
 - Playable game builds (`public/play/<slug>/`) are intentionally `noindex` and robots-disallowed; the `/games/` hub is the indexable page.
+- Article dates are authored as `YYYY-MM-DD` and coerced to UTC midnight. Always format them with `formatDate()` (`src/lib/dates.ts`, which pins `timeZone: "UTC"`); a local-timezone formatter renders the previous day on machines behind UTC (e.g. a `2026-10-07` date showing as "October 6").
 
 ## Conventions
 - **Do not fabricate personal content** (experience, routes, bios); use placeholders and leave the writing to the owner.
