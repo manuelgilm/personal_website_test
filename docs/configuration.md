@@ -8,7 +8,7 @@ The site is a **static frontend** (Astro) plus **Azure Functions** in `api/`, de
 
 | Setting | Where | Used by |
 | --- | --- | --- |
-| Function environment variables | Azure Portal → Static Web App → **Settings → Environment variables** | `api/contact`, `api/mlflow_server` at runtime |
+| Function environment variables | Azure Portal → Static Web App → **Settings → Environment variables** | `api/contact`, `api/mlflow_server`, `api/openai` at runtime |
 | `AZURE_STATIC_WEB_APPS_API_TOKEN_...` | GitHub repo → **Settings → Secrets and variables → Actions → Secrets** | Deployment (created automatically when you connect the repo) |
 | `PUBLIC_GA4_ID`, `PUBLIC_PLAUSIBLE_DOMAIN` | GitHub repo → **Settings → Secrets and variables → Actions → Variables** | Build-time analytics (injected via `app_build_command`) |
 
@@ -46,6 +46,28 @@ Powers the "Get access" request on `/ai/projects/mlflow/`. It creates an MLflow 
 | `NAMECHEAP_SMTP_PORT` | No | `587` | SMTP port |
 
 > `NAMECHEAP_*` variables are shared by both functions.
+
+## Feature: MLflow gateway (`POST /api/openai`)
+
+Lets the site query chat models through the **MLflow gateway's unified OpenAI-compatible API**, without exposing the gateway credentials to the browser. The Function holds the credentials server-side and proxies to `/gateway/mlflow/v1/chat/completions`; the browser only calls same-origin `/api/openai`.
+
+```json
+POST /api/openai
+{ "messages": [{ "role": "user", "content": "Hello" }] }
+
+200 { "success": true, "reply": "...", "model": "gpt-4o-mini" }
+```
+
+| Variable | Required | Default | Purpose |
+| --- | --- | --- | --- |
+| `MLFLOW_GATEWAY_URL` | Yes | — | Gateway base, e.g. `https://sandbox-mlflow.gilmanuel.com/gateway/mlflow/v1` |
+| `MLFLOW_GATEWAY_USER` | Yes | — | Gateway (MLflow) basic-auth username (use a reader account) |
+| `MLFLOW_GATEWAY_PASSWORD` | Yes | — | Gateway (MLflow) basic-auth password |
+| `MLFLOW_GATEWAY_DEFAULT_MODEL` | No | `gpt-4o-mini` | Default gateway **endpoint name** |
+| `MLFLOW_GATEWAY_ALLOWED_MODELS` | No | — | Comma-separated allowlist of endpoint names callers may request; empty means any |
+| `MLFLOW_GATEWAY_TIMEOUT` | No | `30` | Upstream request timeout in seconds |
+
+In the gateway's unified API the `model` field is the **endpoint name** defined in MLflow, not the underlying provider model. The body accepts optional `model`, `temperature` (0–2) and `max_tokens` (1–4096) in addition to the required `messages` array. Messages are capped (50 max, 24k characters total) and each needs a valid `role` (`system`, `user`, `assistant`) and non-empty `content`. Upstream rate limiting (e.g. an OpenAI project limit) surfaces to the client as HTTP `429`.
 
 ## Namecheap SMTP
 

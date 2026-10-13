@@ -1,6 +1,6 @@
 # Adding content
 
-Content is plain Markdown in **Astro content collections**. There is no CMS: create a file, rebuild, and the route, listing entry, sitemap entry, and RSS item are generated automatically.
+Content is plain Markdown in **Astro content collections**. There is no CMS: create a file, rebuild, and the route, listing entry, sitemap entry, and RSS item are generated automatically. Articles can also be **`.mdx`** when you want to embed interactive components (see [Interactive components](#interactive-components-mdx)).
 
 ## Where content lives
 
@@ -8,6 +8,7 @@ Content is plain Markdown in **Astro content collections**. There is no CMS: cre
 src/content/
   articles/
     en/ai/<slug>.md          # AI & Engineering articles
+    en/ai/<slug>.mdx         # …or .mdx to embed components (see below)
     en/rides/<slug>.md       # Road Trips (kind: route | story)
     es/ai/<slug>.md          # same, Spanish
     es/rides/<slug>.md
@@ -103,6 +104,56 @@ Tutorial body in Markdown.
 - **Video**: set `youtubeId` in the frontmatter. The article layout renders a click-to-load embed and adds `VideoObject` structured data automatically.
 - **Transcript**: there is no separate field — add it as a section in the Markdown body so it is crawlable.
 - **Cover**: set `cover` to a path under `public/` (e.g. `/assets/img/my-cover.jpg`) and drop the file in `public/assets/img/`.
+
+## Interactive components (MDX)
+
+Articles are Markdown by default, but the content loader also accepts **`.mdx`**. Rename the file to `.mdx` and you can import and embed Astro components in the body. Keep the `en/` and `es/` twins at the same relative path so they stay paired.
+
+```mdx
+---
+title: "My interactive article"
+description: "One or two sentences for search results and listings."
+date: 2026-10-07
+lang: "en"
+vertical: "ai"
+kind: "article"
+---
+
+import IdeaFeedback from "../../../../components/IdeaFeedback.astro";
+
+Some prose…
+
+<IdeaFeedback persona="optimist" label="Try it" />
+```
+
+The import is four levels up from `src/content/articles/<lang>/<vertical>/`.
+
+### `IdeaFeedback` widget
+
+Lets the reader submit an idea and get a model review through `POST /api/openai` (see [configuration](./configuration.md)). Props:
+
+| Prop | Type | Notes |
+| --- | --- | --- |
+| `persona` | string | One persona id (see below). |
+| `personas` | string[] | Query several personas. |
+| `all` | boolean | Query every persona (reviewers capped at 4). |
+| `plain` | boolean | Send the idea with **no** system prompt, for a plain baseline answer. |
+| `sync` | boolean | Share the typed idea across every widget on the page (default `true`). |
+| `label` | string | Optional heading shown above the form. |
+| `model` | string | Optional gateway endpoint name; defaults to the server's `MLFLOW_GATEWAY_DEFAULT_MODEL`. |
+
+Personas (in **`src/data/personas.ts`**) come in two roles:
+
+- **Reviewers** — `optimist`, `skeptic`, `pragmatist`. Each gets the idea and replies independently, in parallel.
+- **Synthesizer** — `synthesizer`. It runs **after** the reviewers: it receives the idea plus their replies and returns an overall view with a 1–10 score. A synthesizer on its own automatically pulls in the reviewers as inputs.
+
+So `<IdeaFeedback all />` runs the three reviewers, then the synthesizer (up to 4 calls: three in parallel, one after).
+
+- Persona names and system prompts live in **`src/data/personas.ts`** — edit them there.
+- The widget is bilingual automatically (it follows the page locale). Only an authored `label` string needs translating by hand in each language's `.mdx`.
+- Drop it multiple times in one article: each instance works independently, but by default they **share one idea** (kept in `sessionStorage`), so the reader types it once and every section reuses it. Set `sync={false}` to opt out.
+- Use `plain` for a no-persona baseline (e.g. in the intro) to show how the answer changes once a system prompt is added.
+- It needs JavaScript and a working `/api/openai` (use the SWA CLI locally — see [configuration](./configuration.md)). Write the article so it still reads well without the widget.
 
 ## Add a project
 

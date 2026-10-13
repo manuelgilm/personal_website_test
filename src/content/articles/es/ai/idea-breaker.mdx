@@ -1,0 +1,69 @@
+---
+title: "Cómo poner a prueba tus ideas con IA"
+description: "Pon a prueba una idea con un panel de IA —un optimista, un escéptico y un pragmático— más un sintetizador que la puntúa. Y cómo leer la confianza."
+date: 2026-10-07
+lang: "es"
+vertical: "ai"
+kind: "article"
+# youtubeId: "dQw4w9WgXcQ"     # opcional: incrusta el vídeo + esquema VideoObject
+# cover: "/assets/img/cover.jpg" # opcional: imagen de cabecera (colócala en public/assets/img/)
+---
+
+import IdeaFeedback from "../../../../components/IdeaFeedback.astro";
+
+Casi todos rebotamos una idea nueva contra una IA antes que contra cualquier otra persona. Es rápido, siempre está disponible y responde con total seguridad, que es justo la razón por la que esa respuesta merece una puesta a prueba.
+
+Parte del atractivo es la velocidad. En unos segundos obtienes una respuesta larga y bien argumentada que se lee como la última palabra. Ahí está también la trampa: sea cual sea el proveedor, estos modelos tienden a sonar extremadamente seguros. Lo que sale parece un hecho que sería absurdo cuestionar.
+
+No son hechos. Son sistemas probabilísticos, y sus respuestas salen de patrones en datos de entrenamiento que pueden estar desactualizados, incompletos o directamente inventados. Seguro no es lo mismo que correcto, y por eso toda respuesta merece ser revisada, y por eso conviene atacar la misma idea desde más de un ángulo.
+
+Hay una forma rápida de comprobarlo por tu cuenta. Toma una idea y pregúntale sin más:
+
+<IdeaFeedback plain label="Pruébalo: una respuesta simple" />
+
+Ahora deja la idea exactamente igual y añade un system prompt. El system prompt es la palanca más rápida que tienes sobre la salida de un modelo. No cambias parámetros ni haces fine-tuning, y aun así la respuesta se mueve bastante.
+
+## Retroalimentación positiva
+
+Pídele al modelo que sea alentador pero honesto y encontrará las fortalezas: lo que de verdad promete en la idea y dónde tiene margen para crecer. Quieres curiosidad, no halagos. Una primera pasada cálida sirve porque te dice qué partes merece la pena proteger antes de empezar a recortar.
+
+<IdeaFeedback persona="optimist" label="Pruébalo: revisión centrada en las fortalezas" />
+
+Comparado con la respuesta simple de arriba, el tono cambia por sí solo. Nada de la idea ha cambiado, solo la instrucción que recibió el modelo. Es el mismo modelo con otro sombrero.
+
+## Retroalimentación crítica
+
+Ahora cambia el prompt a un escéptico. Esta pasada busca los supuestos débiles, las razones por las que la idea podría fracasar y las partes que solo parecen buenas porque quieres que lo sean. Se lee menos agradable, y ese es el punto: estás pagando por las objeciones que preferirías no escuchar.
+
+<IdeaFeedback persona="skeptic" label="Pruébalo: revisión crítica" />
+
+Dos prompts, dos veredictos muy distintos sobre la misma idea. Ninguno es la verdad. Cada uno es una perspectiva, y una sola perspectiva es una sola muestra.
+
+## Cómo arreglarlo
+
+La crítica sin un siguiente paso es solo ruido. Apunta el modelo a lo que haría falta para avanzar de verdad: las acciones concretas, los recursos y lo primero que merece la pena probar. Esta es la pasada que convierte las objeciones en un plan.
+
+<IdeaFeedback persona="pragmatist" label="Pruébalo: cómo arreglarlo" />
+
+Se nota la diferencia: la misma idea, leída con una mirada pragmática, suena más sólida y realista que el ánimo entusiasta o la demolición. No es porque el modelo se haya vuelto más listo, sino porque la pregunta cambió.
+
+## Visión global
+
+Cada perspectiva aporta una porción. Para juntarlas, entrégale las respuestas a un sintetizador: un prompt que recibe la idea y la retroalimentación de las otras perspectivas, sopesa en qué coinciden y en qué se contradicen, y devuelve una puntuación global de 1 a 10 con una justificación.
+
+<IdeaFeedback persona="synthesizer" label="Pruébalo: visión global" />
+
+La puntuación es un resumen, no un veredicto. Comprime tres opiniones en un número y se construye sobre el mismo modelo que las produjo. Útil para orientarte, no para tener certeza.
+
+## Cómo leer la confianza
+
+Cada respuesta termina con una línea que dice cuánta confianza afirma tener el modelo. Tómalo como una señal, nunca como una probabilidad. Los modelos suelen ser sobreconfiados: el número que reportan y la probabilidad real de acertar son dos cosas muy distintas.
+
+Dos hábitos ayudan más que cualquier puntuación de confianza:
+
+- **Busca coincidencias.** Cuando el optimista, el escéptico y el pragmático señalan la misma preocupación, vale la pena tomársela en serio. Cuando se dispersan, has encontrado incertidumbre real.
+- **Verifica lo que importa.** Todo aquello sobre lo que actuarías — un dato, una afirmación, una «buena práctica» — merece una segunda fuente. El modelo no te avisará cuando esté adivinando.
+
+Hacer la misma pregunta desde varios ángulos supera confiar en una única respuesta segura. Ese es el truco: usa el modelo como un panel y quédate tú con el juicio.
+
+Si quieres ejecutar esto en tu propia máquina, construí [aibreak](https://github.com/manuelgilm/idea-breaker) justo para eso. Es un CLI (además de una API HTTP y una app de escritorio) que evalúa una idea desde varios roles de IA, puntúa cada uno en una escala de 0 a 5 y los agrega en una única puntuación de viabilidad de 0 a 100. Incluye roles integrados, guarda tus ideas en una base de datos local y puede sintetizar un veredicto de todo el panel cuando se lo pides.

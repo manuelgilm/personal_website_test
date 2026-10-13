@@ -1,0 +1,443 @@
+---
+import { defaultLang, type Lang } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
+import {
+  personas as allPersonas,
+  resolvePersonas,
+  getReviewers,
+  personaName,
+  personaSystem,
+  type Persona,
+} from "../data/personas";
+
+interface Props {
+  /** Single persona id (see src/data/personas.ts). */
+  persona?: string;
+  /** List of persona ids to query. */
+  personas?: string[];
+  /** Use every persona (reviewers capped at MAX_PERSONAS). */
+  all?: boolean;
+  /** Send the idea with no system prompt, for a plain baseline answer. */
+  plain?: boolean;
+  /** Share the typed idea across every widget on the page (default true). */
+  sync?: boolean;
+  /** Optional heading shown above the form. */
+  label?: string;
+  /** Optional gateway endpoint name to override the server default model. */
+  model?: string;
+}
+
+interface SelectedPersona {
+  id: string;
+  role: string;
+  name: string;
+  system: string;
+}
+
+const { persona, personas: personaIds, all = false, plain = false, sync = true, label, model } =
+  Astro.props;
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+const t = useTranslations(lang);
+
+let selected: SelectedPersona[] = [];
+
+if (plain) {
+  selected = [{ id: "plain", role: "plain", name: t("idea.plain"), system: "" }];
+} else {
+  let chosen: Persona[] = [];
+  if (all) {
+    chosen = resolvePersonas(allPersonas.map((item) => item.id));
+  } else if (personaIds && personaIds.length) {
+    chosen = resolvePersonas(personaIds);
+  } else if (persona) {
+    chosen = resolvePersonas([persona]);
+  }
+  if (!chosen.length) chosen = [allPersonas[0]];
+
+  const hasReviewer = chosen.some((item) => item.role === "reviewer");
+  const hasSynthesizer = chosen.some((item) => item.role === "synthesizer");
+
+  // A synthesizer with no reviewers has nothing to synthesize: add the reviewers.
+  if (hasSynthesizer && !hasReviewer) {
+    chosen = [...getReviewers(), ...chosen.filter((item) => item.role === "synthesizer")];
+  }
+
+  selected = chosen.map((item) => ({
+    id: item.id,
+    role: item.role,
+    name: personaName(item, lang),
+    system: personaSystem(item, lang),
+  }));
+}
+
+const hasSynthesizer = selected.some((item) => item.role === "synthesizer");
+const isMulti = selected.length > 1 || hasSynthesizer;
+
+const config = {
+  model: model || "",
+  sync,
+  strings: {
+    submit: t("idea.submit"),
+    submitAll: t("idea.submitAll"),
+    loading: t("idea.loading"),
+    required: t("idea.required"),
+    error: t("idea.error"),
+    networkError: t("idea.networkError"),
+  },
+  personas: selected,
+};
+---
+
+<section class="idea-feedback" data-idea-feedback data-config={JSON.stringify(config)}>
+  {label && <p class="idea-feedback-label">{label}</p>}
+
+  <form class="idea-form" data-form novalidate>
+    <textarea
+      data-input
+      rows="3"
+      maxlength="2000"
+      placeholder={t("idea.placeholder")}
+      aria-label={t("idea.placeholder")}></textarea>
+    <div class="idea-actions">
+      <button type="submit" class="btn primary" data-submit>
+        {isMulti ? t("idea.submitAll") : t("idea.submit")}
+      </button>
+      <span class="idea-hint">{t("idea.confidence")}</span>
+    </div>
+  </form>
+
+  <p class="form-status" role="status" aria-live="polite" hidden data-status></p>
+  <div class="idea-results" data-results hidden></div>
+
+  <noscript>
+    <p class="idea-noscript">{t("idea.noscript")}</p>
+  </noscript>
+</section>
+
+<script>
+  interface PersonaConfig {
+    id: string;
+    role: string;
+    name: string;
+    system: string;
+  }
+
+  interface GatewayResult {
+    ok: boolean;
+    data?: { success?: boolean; reply?: string; model?: string; message?: string };
+    network?: boolean;
+  }
+
+  interface CardResult {
+    node: HTMLElement;
+    failed: boolean;
+    digest: string;
+  }
+
+  (function () {
+    const widgets = document.querySelectorAll<HTMLElement>("[data-idea-feedback]");
+    if (!widgets.length) return;
+
+    const STORAGE_KEY = "idea-feedback:idea";
+    const SYNC_EVENT = "idea-feedback:sync";
+
+    function readIdea(): string {
+      try {
+        return window.sessionStorage.getItem(STORAGE_KEY) || "";
+      } catch (error) {
+        return "";
+      }
+    }
+
+    function writeIdea(value: string) {
+      try {
+        window.sessionStorage.setItem(STORAGE_KEY, value);
+      } catch (error) {
+        /* storage unavailable */
+      }
+    }
+
+    widgets.forEach((widget) => {
+      if (widget.dataset.ideaReady) return;
+      widget.dataset.ideaReady = "1";
+
+      let config: any;
+      try {
+        config = JSON.parse(widget.getAttribute("data-config") || "{}");
+      } catch (error) {
+        return;
+      }
+
+      const strings = (config.strings || {}) as Record<string, string>;
+      const list = (config.personas || []) as PersonaConfig[];
+      if (!list.length) return;
+
+      const sync = config.sync !== false;
+      const reviewers = list.filter((persona) => persona.role !== "synthesizer");
+      const synthesizers = list.filter((persona) => persona.role === "synthesizer");
+
+      const form = widget.querySelector<HTMLFormElement>("[data-form]");
+      const input = widget.querySelector<HTMLTextAreaElement>("[data-input]");
+      const submit = widget.querySelector<HTMLButtonElement>("[data-submit]");
+      const status = widget.querySelector<HTMLElement>("[data-status]");
+      const results = widget.querySelector<HTMLElement>("[data-results]");
+      if (!form || !input || !submit || !results) return;
+
+      const defaultLabel = submit.textContent;
+
+      if (sync) {
+        if (!input.value) {
+          const stored = readIdea();
+          if (stored) input.value = stored;
+        }
+        input.addEventListener("input", () => {
+          writeIdea(input.value);
+          document.dispatchEvent(
+            new CustomEvent(SYNC_EVENT, { detail: { value: input.value, source: input } }),
+          );
+        });
+        document.addEventListener(SYNC_EVENT, (event) => {
+          const detail = (event as CustomEvent).detail as { value: string; source: unknown };
+          if (!detail || detail.source === input) return;
+          if (document.activeElement === input) return;
+          input.value = detail.value;
+        });
+      }
+
+      function setStatus(message: string, type: string) {
+        if (!status) return;
+        status.textContent = message || "";
+        status.hidden = !message;
+        status.dataset.type = type || "";
+      }
+
+      function makeCard(name: string, body: string, overall: boolean, model?: string) {
+        const card = document.createElement("article");
+        card.className = overall ? "idea-card idea-card--overall" : "idea-card";
+
+        const title = document.createElement("h3");
+        title.className = "idea-card-title";
+        title.textContent = name;
+
+        const text = document.createElement("p");
+        text.className = "idea-card-body";
+        text.textContent = body;
+
+        card.appendChild(title);
+        card.appendChild(text);
+
+        if (model) {
+          const meta = document.createElement("span");
+          meta.className = "idea-card-model";
+          meta.textContent = model;
+          card.appendChild(meta);
+        }
+        return card;
+      }
+
+      function renderResult(persona: PersonaConfig, result: GatewayResult, overall: boolean): CardResult {
+        if (result.network) {
+          return { node: makeCard(persona.name, strings.networkError, overall), failed: true, digest: "" };
+        }
+        if (!result.ok || !result.data || !result.data.success) {
+          const message = (result.data && result.data.message) || strings.error;
+          return { node: makeCard(persona.name, message, overall), failed: true, digest: "" };
+        }
+        const reply = result.data.reply || "";
+        return { node: makeCard(persona.name, reply, overall, result.data.model), failed: false, digest: reply };
+      }
+
+      async function ask(persona: PersonaConfig, idea: string, reviews: string): Promise<GatewayResult> {
+        const messages: { role: string; content: string }[] = [];
+        if (persona.system) messages.push({ role: "system", content: persona.system });
+
+        let content = idea;
+        if (persona.role === "synthesizer" && reviews) {
+          content = `Idea:\n${idea}\n\nReviews from the other perspectives:\n\n${reviews}`;
+        }
+        messages.push({ role: "user", content });
+
+        const payload: { model?: string; messages: { role: string; content: string }[] } = { messages };
+        if (config.model) payload.model = config.model;
+
+        try {
+          const response = await fetch("/api/openai", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await response.json();
+          return { ok: response.ok, data };
+        } catch (error) {
+          return { ok: false, network: true };
+        }
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        setStatus("", "");
+        results.hidden = true;
+        results.replaceChildren();
+
+        const idea = (input.value || "").trim();
+        if (!idea) {
+          setStatus(strings.required, "error");
+          return;
+        }
+        if (sync) writeIdea(input.value);
+
+        submit.disabled = true;
+        submit.textContent = strings.loading;
+
+        try {
+          const cards: HTMLElement[] = [];
+          let failed = 0;
+          let total = 0;
+
+          const reviewerResults = await Promise.all(reviewers.map((persona) => ask(persona, idea, "")));
+          const digest: string[] = [];
+          reviewerResults.forEach((result, index) => {
+            const persona = reviewers[index];
+            const card = renderResult(persona, result, false);
+            total += 1;
+            if (card.failed) failed += 1;
+            else if (card.digest) digest.push(`${persona.name}:\n${card.digest}`);
+            cards.push(card.node);
+          });
+
+          if (synthesizers.length) {
+            const reviews = digest.join("\n\n");
+            if (reviews) {
+              const synthResults = await Promise.all(
+                synthesizers.map((persona) => ask(persona, idea, reviews)),
+              );
+              synthResults.forEach((result, index) => {
+                const card = renderResult(synthesizers[index], result, true);
+                total += 1;
+                if (card.failed) failed += 1;
+                cards.push(card.node);
+              });
+            } else {
+              synthesizers.forEach((persona) => {
+                total += 1;
+                failed += 1;
+                cards.push(makeCard(persona.name, strings.error, true));
+              });
+            }
+          }
+
+          results.replaceChildren(...cards);
+          results.hidden = false;
+
+          if (total > 0 && failed === total) setStatus(strings.error, "error");
+        } catch (error) {
+          setStatus(strings.networkError, "error");
+        } finally {
+          submit.disabled = false;
+          submit.textContent = defaultLabel;
+        }
+      });
+    });
+  })();
+</script>
+
+<style>
+  .idea-feedback {
+    margin: 2rem 0;
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-elev);
+  }
+
+  .idea-feedback-label {
+    margin: 0 0 0.75rem;
+    font-weight: 600;
+  }
+
+  .idea-form {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .idea-form textarea {
+    width: 100%;
+    min-height: 90px;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    color: var(--fg);
+    font: inherit;
+    resize: vertical;
+  }
+
+  .idea-form textarea:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: transparent;
+  }
+
+  .idea-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .idea-hint {
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  .idea-feedback .btn {
+    cursor: pointer;
+  }
+
+  .idea-feedback .btn:disabled {
+    opacity: 0.7;
+    cursor: default;
+  }
+
+  .idea-results {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+
+  .idea-card {
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+  }
+
+  .idea-card--overall {
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+    background: color-mix(in srgb, var(--accent) 8%, var(--bg));
+  }
+
+  .idea-card-title {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+    color: var(--accent);
+  }
+
+  .idea-card-body {
+    margin: 0;
+    white-space: pre-wrap;
+  }
+
+  .idea-card-model {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  .idea-noscript {
+    margin: 0.75rem 0 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+</style>

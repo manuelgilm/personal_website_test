@@ -1,0 +1,69 @@
+---
+title: "How to Stress-Test Your Ideas with AI"
+description: "Pressure-test an idea with an AI panel — an optimist, a skeptic and a pragmatist — plus a synthesizer that scores it. And how to read the confidence."
+date: 2026-10-07
+lang: "en"
+vertical: "ai"
+kind: "article"
+# youtubeId: "dQw4w9WgXcQ"     # optional: embeds the video + VideoObject schema
+# cover: "/assets/img/cover.jpg" # optional: header image (put file in public/assets/img/)
+---
+
+import IdeaFeedback from "../../../../components/IdeaFeedback.astro";
+
+Most of us now bounce a new idea off an AI before we bounce it off anyone else. It's fast, it's always there, and it answers with total confidence — which is exactly why that answer deserves a stress test.
+
+Part of the appeal is speed. A few seconds gets you a long, well-argued answer that reads like the final word. That's also the trap: whichever provider you use, these models tend to sound extremely confident. Whatever comes out looks like a fact you'd be silly to question.
+
+They're not facts. They're probabilistic systems, and their answers come from patterns in training data that may be outdated, incomplete, or simply invented. Confident isn't the same as correct, which is why an answer always deserves to be checked — and why it pays to attack the same idea from more than one angle.
+
+There's a quick way to see this for yourself. Take an idea and ask plainly:
+
+<IdeaFeedback plain label="Try it: a plain answer" />
+
+Now keep the idea exactly the same and add a system prompt. The system prompt is the fastest lever you have over a model's output. You're not changing parameters and you're not fine-tuning anything, yet the answer moves a lot.
+
+## Positive feedback
+
+Ask the model to be encouraging but honest and it'll find the strengths: what's genuinely promising in the idea and where it has room to grow. Curiosity, not flattery, is what you want here. A warm first pass is useful because it tells you which parts are worth protecting before you start cutting.
+
+<IdeaFeedback persona="optimist" label="Try it: strengths-first review" />
+
+Compared to the plain answer above, the tone shifts on its own. Nothing about the idea changed — only the instruction the model was given. It's the same model, wearing a different hat.
+
+## Critical feedback
+
+Now flip the prompt to a skeptic. This pass hunts for the weak assumptions, the reasons the idea could fail, and the parts that only look good because you want them to. It's less pleasant to read, and that's the point: you're paying for the objections you'd rather not hear.
+
+<IdeaFeedback persona="skeptic" label="Try it: critical review" />
+
+Two prompts, two very different verdicts on the same idea. Neither is the truth. Each is one perspective, and a single perspective is a single sample.
+
+## How to fix it
+
+Criticism without a next step is just noise. Point the model at what it would actually take to move forward — the concrete actions, the resources, and the first thing worth testing. This is the pass that turns objections into a plan.
+
+<IdeaFeedback persona="pragmatist" label="Try it: how to fix it" />
+
+You can see the difference: the same idea, read through a pragmatic lens, sounds more grounded and realistic than either the cheerleading or the takedown. That's not because the model got smarter. It's because the question changed.
+
+## Overall
+
+Each persona is a slice. To put the slices together, hand the answers to a synthesizer: a prompt that receives the idea and the feedback from the other perspectives, weighs where they agree and where they conflict, and returns an overall score from 1 to 10 with a reason.
+
+<IdeaFeedback persona="synthesizer" label="Try it: overall view" />
+
+The score is a summary, not a verdict. It compresses three opinions into one number, and it's built on top of the same model that produced them. Useful for orientation, not for certainty.
+
+## Reading the confidence
+
+Every reply ends with a line telling you how confident the model claims to be. Treat that as a signal, never as a probability. Models are frequently overconfident — the number they report and the chance they're actually right are two very different things.
+
+Two habits help more than any single confidence score:
+
+- **Look for agreement.** When the optimist, the skeptic, and the pragmatist all land on the same concern, that's worth taking seriously. When they scatter, you've found genuine uncertainty.
+- **Verify the parts that matter.** Anything you'd act on — a number, a claim, a "best practice" — is worth a second source. The model won't tell you when it's guessing.
+
+Asking the same question from several angles beats trusting a single confident answer. That's the whole trick: use the model as a panel, and keep the judgment for yourself.
+
+If you want to run this on your own machine, I built [aibreak](https://github.com/manuelgilm/idea-breaker) for exactly that. It's a CLI (plus an HTTP API and a desktop app) that evaluates an idea with multiple AI personas, scores each one on a 0–5 scale, and aggregates them into a single 0–100 feasibility score. It ships with built-in personas, keeps your ideas in a local database, and can synthesize a verdict from the whole panel when you ask for it.
