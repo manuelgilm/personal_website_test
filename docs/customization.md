@@ -88,6 +88,14 @@ Fonts are self-hosted via `@fontsource-variable/*`, imported at the top of **`sr
 - **MLflow server**: `src/components/MlflowProject.astro` (pages `ai/projects/mlflow.astro` + the `es/` mirror) holds the project copy and the **Get access** dialog, which posts to `/api/mlflow_server`. See [configuration](./configuration.md) for the required environment variables.
 - **YouTube playlists**: `src/components/Playlists.astro`, injected into the AI hub via the `<slot />` in `PillarHub.astro` (only the AI page passes it).
 
+## Article AI widget (idea feedback)
+
+- **Widget**: `src/components/IdeaFeedback.astro` — a form that posts to `/api/openai` and renders the persona replies (and, for the synthesizer, an overall score). It is embedded inside `.mdx` articles; see [content](./content.md) for props.
+- **Personas**: reviewer/synthesizer names and system prompts live in **`src/data/personas.ts`**.
+- **UI strings**: the `idea.*` keys in **`src/i18n/ui.ts`** (edit `en` and `es`).
+- **Example**: `src/content/articles/{en,es}/ai/idea-breaker.mdx`.
+- **Backend**: the gateway function needs the `MLFLOW_GATEWAY_*` variables — see [configuration](./configuration.md).
+
 ## Contact form
 
 - Fields/markup and submit logic: **`src/components/ContactForm.astro`**.

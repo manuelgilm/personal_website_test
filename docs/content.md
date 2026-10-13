@@ -8,6 +8,7 @@ Content is plain Markdown in **Astro content collections**. There is no CMS: cre
 src/content/
   articles/
     en/ai/<slug>.md          # AI & Engineering articles
+    en/ai/<slug>.mdx         # …or .mdx to embed components (see below)
     en/rides/<slug>.md       # Road Trips (kind: route | story)
     es/ai/<slug>.md          # same, Spanish
     es/rides/<slug>.md
@@ -136,6 +137,8 @@ Lets the reader submit an idea and get a model review through `POST /api/openai`
 | `persona` | string | One persona id (see below). |
 | `personas` | string[] | Query several personas. |
 | `all` | boolean | Query every persona (reviewers capped at 4). |
+| `plain` | boolean | Send the idea with **no** system prompt, for a plain baseline answer. |
+| `sync` | boolean | Share the typed idea across every widget on the page (default `true`). |
 | `label` | string | Optional heading shown above the form. |
 | `model` | string | Optional gateway endpoint name; defaults to the server's `MLFLOW_GATEWAY_DEFAULT_MODEL`. |
 
@@ -148,7 +151,8 @@ So `<IdeaFeedback all />` runs the three reviewers, then the synthesizer (up to 
 
 - Persona names and system prompts live in **`src/data/personas.ts`** — edit them there.
 - The widget is bilingual automatically (it follows the page locale). Only an authored `label` string needs translating by hand in each language's `.mdx`.
-- Drop it multiple times in one article: each instance works independently.
+- Drop it multiple times in one article: each instance works independently, but by default they **share one idea** (kept in `sessionStorage`), so the reader types it once and every section reuses it. Set `sync={false}` to opt out.
+- Use `plain` for a no-persona baseline (e.g. in the intro) to show how the answer changes once a system prompt is added.
 - It needs JavaScript and a working `/api/openai` (use the SWA CLI locally — see [configuration](./configuration.md)). Write the article so it still reads well without the widget.
 
 ## Add a project

@@ -8,24 +8,25 @@ Manuel Gil's personal site (gilmanuel.com): a bilingual **Astro** static site pl
 - `npm run build` — `astro build && pagefind --site dist` (also builds the search index)
 - `npm run check` — `astro check` (types). `build` does NOT typecheck; run this before finishing.
 - `npm run preview`, `npm run indexnow` (submits the live sitemap; needs a deploy)
-- API syntax check: `python3 -m py_compile api/contact/__init__.py api/mlflow_server/__init__.py`
+- API syntax check: `python3 -m py_compile api/contact/__init__.py api/mlflow_server/__init__.py api/openai/__init__.py`
 - No tests, lint, or formatter are configured. Keep the build and `check` clean.
 
 ## Hard requirements / local-dev gotchas
 - **Node >= 22.12.0** (Astro 7). `.nvmrc` = `22`; CI sets `NODE_VERSION: "22"`. Do not lower it.
-- `astro dev`/`preview` do **not** serve `/api/*`. The contact and MLflow forms only work with Azure Functions + the SWA CLI (see `docs/configuration.md`).
+- `astro dev`/`preview` do **not** serve `/api/*`. The contact form, the MLflow form and the article `IdeaFeedback` widget only work with Azure Functions + the SWA CLI (see `docs/configuration.md`).
 - **Pagefind search exists only after `npm run build`** (post-build index), not in dev.
 - The Python API uses `X | None` annotations (Python >= 3.10). SWA managed Python is confirmed working.
 
 ## Architecture
 - English at root, Spanish at `/es/` (`i18n.prefixDefaultLocale: false`). All UI text lives in `src/i18n/ui.ts` — add keys to **both** `en` and `es`. Components read `Astro.currentLocale` and build links with `localizePath(lang, path)` (`src/i18n/utils.ts`); never hardcode `/es/`.
 - Content collections (`src/content.config.ts`):
-  - `articles` → `src/content/articles/{en,es}/{ai|rides|games}/<slug>.md`; `vertical` = ai|rides|games, `kind` = article|route|story|devlog; optional `youtubeId`, `cover`, `draft`.
+  - `articles` → `src/content/articles/{en,es}/{ai|rides|games}/<slug>.{md,mdx}`; `vertical` = ai|rides|games, `kind` = article|route|story|devlog; optional `youtubeId`, `cover`, `draft`.
   - `tutorials` → `src/content/tutorials/{en,es}/**`.
   - Bilingual pairs share the same relative path. URL derivation is in `src/lib/articles.ts`.
-  - **The `articles` collection is currently empty** (listings render "Content coming soon") — don't assume posts exist.
-- Data/config: `src/consts.ts` (SITE), `src/data/projects.ts`, `src/data/games.ts`, `src/data/cv.ts`.
-- `api/` = Azure Functions, v1 model (`function.json` + `__init__.py`): `contact`, `mlflow_server`. Required env vars per feature are in `docs/configuration.md`.
+  - Articles can be `.mdx` (via `@astrojs/mdx`) to embed components such as `src/components/IdeaFeedback.astro` (personas in `src/data/personas.ts`) — see `docs/content.md`.
+  - Only the bilingual `ai/idea-breaker` pair exists so far; other listings still render "Content coming soon". Don't assume more posts exist.
+- Data/config: `src/consts.ts` (SITE), `src/data/projects.ts`, `src/data/games.ts`, `src/data/cv.ts`, `src/data/personas.ts` (IdeaFeedback reviewers/synthesizer).
+- `api/` = Azure Functions, v1 model (`function.json` + `__init__.py`): `contact`, `mlflow_server`, `openai` (proxies the MLflow gateway's OpenAI-compatible API). Required env vars per feature are in `docs/configuration.md`.
 - `public/`: `staticwebapp.config.json`, `robots.txt`, `site.webmanifest`, `assets/img/*` (favicon/OG/me), `play/<slug>/` (Godot game builds), `cv/*.pdf` (CV download).
 - Deploy: one workflow, `.github/workflows/azure-static-web-apps-*.yml`; Oryx runs `npm run build` → `dist`, with `app_location: "."`, `api_location: "./api"`, `output_location: "dist"`.
 
