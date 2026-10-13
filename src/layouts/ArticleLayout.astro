@@ -5,6 +5,7 @@ import { SITE } from "../consts";
 import { defaultLang, type Lang, type UIKey } from "../i18n/ui";
 import { localizePath, useTranslations } from "../i18n/utils";
 import { type ArticleEntry } from "../lib/articles";
+import { formatDate } from "../lib/dates";
 
 interface Props {
   entry: ArticleEntry;
@@ -19,9 +20,7 @@ const { title, description, date, youtubeId, vertical, kind } = entry.data;
 const site = Astro.site ?? new URL(SITE.url);
 const canonical = new URL(Astro.url.pathname, site).href;
 const published = date.toISOString();
-const displayDate = new Intl.DateTimeFormat(lang === "es" ? "es-CO" : "en-US", {
-  dateStyle: "long",
-}).format(date);
+const displayDate = formatDate(lang, date, "long");
 
 const jsonLd: Record<string, unknown>[] = [
   {

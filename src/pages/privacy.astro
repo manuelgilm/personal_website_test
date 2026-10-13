@@ -1,0 +1,64 @@
+---
+import SimplePage from "../components/SimplePage.astro";
+import { SITE } from "../consts";
+import { defaultLang, type Lang } from "../i18n/ui";
+import { localizePath } from "../i18n/utils";
+
+const lang = (Astro.currentLocale ?? defaultLang) as Lang;
+---
+
+<SimplePage page="privacy">
+  <div class="prose">
+    <p>
+      This page explains what data this site handles and where it goes. It's a personal site, so
+      there isn't much — but a couple of features do process data, and it's worth being clear about
+      them.
+    </p>
+
+    <h2>The AI idea widget</h2>
+    <p>
+      The interactive widgets in the
+      <a href={localizePath(lang, "ai/articles/idea-breaker")}>stress-testing article</a> send the
+      text you type to an <strong>AI model (OpenAI)</strong>. The request goes through my own
+      <strong>MLflow server</strong>, which acts as a gateway, and the interaction — your input and
+      the model's reply — is <strong>recorded as a trace</strong> in that server so I can review how
+      the demo behaves and debug it.
+    </p>
+    <p>
+      Because those traces are stored, please <strong>don't enter sensitive or personal
+      information</strong> in the widget. Treat anything you type there as if it were public.
+    </p>
+
+    <h2>The contact form</h2>
+    <p>
+      When you use the <a href={localizePath(lang, "contact")}>contact form</a>, the name, email,
+      subject and message you enter are sent to me by email (through my email provider, Namecheap)
+      so I can reply. They aren't stored on the site itself; they live in my mailbox.
+    </p>
+
+    <h2>Analytics</h2>
+    <p>
+      This site may use analytics to understand which pages are read — <strong>Google Analytics
+      4</strong> and/or <strong>Plausible</strong>, depending on how it's configured. Plausible is
+      cookieless; Google Analytics may set cookies. If you block cookies or use a tracker blocker,
+      the site still works.
+    </p>
+
+    <h2>Who is responsible</h2>
+    <p>
+      This site is run by <strong>{SITE.name}</strong> ({SITE.location}). For any question about your
+      data — including a request to delete a stored trace or a contact message — email
+      <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+    </p>
+
+    {/* TODO(author): confirm the retention details below (or replace with your own). */}
+    <h2>How long data is kept</h2>
+    <p>
+      I keep AI traces only as long as they're useful for evaluating and improving the demo, and
+      contact emails only as long as needed to handle the conversation. You can ask me to delete
+      either at any time using the email above.
+    </p>
+
+    <p>If this policy changes, I'll update this page.</p>
+  </div>
+</SimplePage>

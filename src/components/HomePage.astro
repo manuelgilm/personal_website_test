@@ -6,13 +6,11 @@ import heroBg from "../assets/img/home-bg.webp";
 import { defaultLang, type Lang } from "../i18n/ui";
 import { useTranslations } from "../i18n/utils";
 import { articleHref, getArticles } from "../lib/articles";
+import { formatDate } from "../lib/dates";
 
 const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(lang);
 const latest = (await getArticles(lang)).slice(0, 3);
-const dateFmt = new Intl.DateTimeFormat(lang === "es" ? "es-CO" : "en-US", {
-  dateStyle: "medium",
-});
 
 const roles = t("home.hero.roles")
   .split("|")
@@ -60,7 +58,7 @@ const roles = t("home.hero.roles")
                 </h3>
                 <p class="post-item-meta">
                   <time datetime={entry.data.date.toISOString()}>
-                    {dateFmt.format(entry.data.date)}
+                    {formatDate(lang, entry.data.date)}
                   </time>
                 </p>
                 <p class="post-item-desc">{entry.data.description}</p>
