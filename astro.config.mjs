@@ -1,5 +1,6 @@
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
+import mdx from "@astrojs/mdx";
 
 export default defineConfig({
   site: "https://gilmanuel.com",
@@ -12,6 +13,7 @@ export default defineConfig({
     },
   },
   integrations: [
+    mdx(),
     sitemap({
       filter: (page) =>
         !page.includes("/contact/thanks/") && !page.includes("/es/contact/gracias/"),
