@@ -39,6 +39,7 @@ Azure SWA **rejects duplicate routes** in `public/staticwebapp.config.json` and 
 - The CV "Download PDF" button only renders when `public/cv/manuel-gil-cv-{en,es}.pdf` exists (build-time `fs.existsSync`).
 - Playable game builds (`public/play/<slug>/`) are intentionally `noindex` and robots-disallowed; the `/games/` hub is the indexable page.
 - Article dates are authored as `YYYY-MM-DD` and coerced to UTC midnight. Always format them with `formatDate()` (`src/lib/dates.ts`, which pins `timeZone: "UTC"`); a local-timezone formatter renders the previous day on machines behind UTC (e.g. a `2026-10-07` date showing as "October 6").
+- Astro strips the whitespace between text and an inline element (`<a>`, `<strong>`, …) when they're on separate lines, so the rendered text runs together (e.g. `the<a>`). Put the element on the same line, or add an explicit space with `{" "}`.
 
 ## Conventions
 - **Do not fabricate personal content** (experience, routes, bios); use placeholders and leave the writing to the owner.
