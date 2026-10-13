@@ -153,6 +153,7 @@ So `<IdeaFeedback all />` runs the three reviewers, then the synthesizer (up to 
 - The widget is bilingual automatically (it follows the page locale). Only an authored `label` string needs translating by hand in each language's `.mdx`.
 - Drop it multiple times in one article: each instance works independently, but by default they **share one idea** (kept in `sessionStorage`), so the reader types it once and every section reuses it. Set `sync={false}` to opt out.
 - Use `plain` for a no-persona baseline (e.g. in the intro) to show how the answer changes once a system prompt is added.
+- Guardrail blocks come back from the API as `{ success: false, code: "guardrail" }`; the widget shows the localized `idea.blocked` message instead of a generic error.
 - It needs JavaScript and a working `/api/openai` (use the SWA CLI locally — see [configuration](./configuration.md)). Write the article so it still reads well without the widget.
 
 ## Add a project
