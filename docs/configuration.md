@@ -69,6 +69,8 @@ POST /api/openai
 
 In the gateway's unified API the `model` field is the **endpoint name** defined in MLflow, not the underlying provider model. The body accepts optional `model`, `temperature` (0–2) and `max_tokens` (1–4096) in addition to the required `messages` array. Messages are capped (50 max, 24k characters total) and each needs a valid `role` (`system`, `user`, `assistant`) and non-empty `content`. Upstream rate limiting (e.g. an OpenAI project limit) surfaces to the client as HTTP `429`.
 
+Error responses are `{ "success": false, "message": "...", "code": "..." }`. When a gateway guardrail blocks the input, `code` is `"guardrail"` (HTTP `400`); other codes include `rate_limited`, `timeout`, `network`, `auth`, and `upstream`.
+
 ## Namecheap SMTP
 
 1. Namecheap → Account → Email → your mailbox → *Mail Client Configuration* for server/port/username.

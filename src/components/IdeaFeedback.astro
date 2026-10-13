@@ -82,6 +82,7 @@ const config = {
     loading: t("idea.loading"),
     required: t("idea.required"),
     error: t("idea.error"),
+    blocked: t("idea.blocked"),
     networkError: t("idea.networkError"),
   },
   personas: selected,
@@ -128,7 +129,7 @@ const config = {
 
   interface GatewayResult {
     ok: boolean;
-    data?: { success?: boolean; reply?: string; model?: string; message?: string };
+    data?: { success?: boolean; reply?: string; model?: string; message?: string; code?: string };
     network?: boolean;
   }
 
@@ -136,6 +137,7 @@ const config = {
     node: HTMLElement;
     failed: boolean;
     digest: string;
+    code?: string;
   }
 
   (function () {
@@ -244,8 +246,12 @@ const config = {
           return { node: makeCard(persona.name, strings.networkError, overall), failed: true, digest: "" };
         }
         if (!result.ok || !result.data || !result.data.success) {
-          const message = (result.data && result.data.message) || strings.error;
-          return { node: makeCard(persona.name, message, overall), failed: true, digest: "" };
+          const code = result.data && result.data.code;
+          const message =
+            code === "guardrail"
+              ? strings.blocked
+              : (result.data && result.data.message) || strings.error;
+          return { node: makeCard(persona.name, message, overall), failed: true, digest: "", code };
         }
         const reply = result.data.reply || "";
         return { node: makeCard(persona.name, reply, overall, result.data.model), failed: false, digest: reply };
@@ -297,6 +303,7 @@ const config = {
           const cards: HTMLElement[] = [];
           let failed = 0;
           let total = 0;
+          let blocked = false;
 
           const reviewerResults = await Promise.all(reviewers.map((persona) => ask(persona, idea, "")));
           const digest: string[] = [];
@@ -304,8 +311,12 @@ const config = {
             const persona = reviewers[index];
             const card = renderResult(persona, result, false);
             total += 1;
-            if (card.failed) failed += 1;
-            else if (card.digest) digest.push(`${persona.name}:\n${card.digest}`);
+            if (card.failed) {
+              failed += 1;
+              if (card.code === "guardrail") blocked = true;
+            } else if (card.digest) {
+              digest.push(`${persona.name}:\n${card.digest}`);
+            }
             cards.push(card.node);
           });
 
@@ -322,10 +333,11 @@ const config = {
                 cards.push(card.node);
               });
             } else {
+              const message = blocked ? strings.blocked : strings.error;
               synthesizers.forEach((persona) => {
                 total += 1;
                 failed += 1;
-                cards.push(makeCard(persona.name, strings.error, true));
+                cards.push(makeCard(persona.name, message, true));
               });
             }
           }
@@ -333,7 +345,9 @@ const config = {
           results.replaceChildren(...cards);
           results.hidden = false;
 
-          if (total > 0 && failed === total) setStatus(strings.error, "error");
+          if (total > 0 && failed === total) {
+            setStatus(blocked ? strings.blocked : strings.error, "error");
+          }
         } catch (error) {
           setStatus(strings.networkError, "error");
         } finally {
