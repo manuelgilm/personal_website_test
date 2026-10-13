@@ -29,11 +29,12 @@ const socials = [
         ))
       }
     </ul>
-    <p>
-      &copy; {year} {SITE.name}. {t("footer.rights")}
-      <span aria-hidden="true">·</span>
-      <a href={localizePath(lang, "privacy")}>{t("footer.privacy")}</a>
-    </p>
+    <p>&copy; {year} {SITE.name}. {t("footer.rights")}</p>
+    <ul class="footer-legal">
+      <li>
+        <a href={localizePath(lang, "privacy")}>{t("footer.privacy")}</a>
+      </li>
+    </ul>
     <p class="credits">{t("footer.credits")}</p>
   </div>
 </footer>

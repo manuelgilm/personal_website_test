@@ -17,9 +17,9 @@ const lang = (Astro.currentLocale ?? defaultLang) as Lang;
 
     <h2>The AI idea widget</h2>
     <p>
-      The interactive widgets in the
+      The interactive widgets in the{" "}
       <a href={localizePath(lang, "ai/articles/idea-breaker")}>stress-testing article</a> send the
-      text you type to an <strong>AI model (OpenAI)</strong>. The request goes through my own
+      text you type to an <strong>AI model (OpenAI)</strong>. The request goes through my own{" "}
       <strong>MLflow server</strong>, which acts as a gateway, and the interaction — your input and
       the model's reply — is <strong>recorded as a trace</strong> in that server so I can review how
       the demo behaves and debug it.
@@ -47,7 +47,7 @@ const lang = (Astro.currentLocale ?? defaultLang) as Lang;
     <h2>Who is responsible</h2>
     <p>
       This site is run by <strong>{SITE.name}</strong> ({SITE.location}). For any question about your
-      data — including a request to delete a stored trace or a contact message — email
+      data — including a request to delete a stored trace or a contact message — email{" "}
       <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
     </p>
 
